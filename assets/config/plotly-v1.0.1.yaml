@@ -9,6 +9,7 @@ layout:
     t: 15
     b: 67.5
   showlegend: false
+  hovermode: false
   xaxis:
     dtick: 100
     type: number
@@ -39,96 +40,6 @@ layout:
       - 605
       - 0
 entities:
-  - entity: ""
-    name: Target 1
-    type: scatter
-    mode: markers+text
-    marker:
-      size: 12
-      color: lightgrey
-      symbol: circle
-    text: >
-      $ex ("T1 (" + hass.states["sensor.replace_me_target_1_speed"].state
-      + " cm/s)")
-    textfont:
-      color: lightgrey
-    textposition: top center
-    x:
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state)
-        )
-    "y":
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state)
-        )
-  - entity: ""
-    name: Target 2
-    type: scatter
-    mode: markers+text
-    marker:
-      size: 12
-      color: lightgrey
-      symbol: circle
-    text: >
-      $ex ("T2 (" + hass.states["sensor.replace_me_target_2_speed"].state
-      + " cm/s)")
-    textfont:
-      color: lightgrey
-    textposition: top center
-    x:
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state)
-        )
-    "y":
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state)
-        )
-  - entity: ""
-    name: Target 3
-    type: scatter
-    mode: markers+text
-    marker:
-      size: 12
-      color: lightgrey
-      symbol: circle
-    text: >
-      $ex ("T3 (" + hass.states["sensor.replace_me_target_3_speed"].state
-      + " cm/s)")
-    textfont:
-      color: lightgrey
-    textposition: top center
-    x:
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state)
-        )
-    "y":
-      - |-
-        $ex (
-          parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state) === 0 &&
-          parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0
-          ? null
-          : parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state)
-        )
   - entity: ""
     name: Coverage
     type: scatter
@@ -396,4 +307,94 @@ entities:
           ? null
           : ((parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_exclusion_y_end"].state)) / 2)
+        )
+  - entity: ""
+    name: Target 1
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightgrey
+      symbol: circle
+    text: >
+      $ex ("T1 (" + hass.states["sensor.replace_me_target_1_speed"].state
+      + " cm/s)")
+    textfont:
+      color: lightgrey
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state)
+        )
+  - entity: ""
+    name: Target 2
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightgrey
+      symbol: circle
+    text: >
+      $ex ("T2 (" + hass.states["sensor.replace_me_target_2_speed"].state
+      + " cm/s)")
+    textfont:
+      color: lightgrey
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state)
+        )
+  - entity: ""
+    name: Target 3
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightgrey
+      symbol: circle
+    text: >
+      $ex ("T3 (" + hass.states["sensor.replace_me_target_3_speed"].state
+      + " cm/s)")
+    textfont:
+      color: lightgrey
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0
+          ? null
+          : parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state)
         )
