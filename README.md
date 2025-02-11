@@ -116,7 +116,7 @@ Have an idea? Let us know on Discord or the Issues page. Your input could shape 
 Your feedback fuels our innovation. Whether you're encountering a hiccup or have a brilliant idea to share, we're here to listen.
 
 **Discord:**  
-- Chat with our community and get instant help on our [Discord server](https://discord.com/invite/).
+- Chat with our community and get instant help on our [Discord server](https://discord.gg/HkTZmQ77).
 
 **GitHub Issues:**   
 - Encountered a bug or have a suggestion? Report it on our [GitHub Issues page](https://github.com/sensy-one/mmwave-sensor/issues).
