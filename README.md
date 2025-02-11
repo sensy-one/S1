@@ -54,7 +54,7 @@ Add an interactive map to your Home Assistant dashboard. The Plotly Graph Card a
 - Go to your Home Assistant dashboard and click **Edit Dashboard**.
 - Select **Add Card** and choose **Plotly Graph Card**.
 - Click **Show Code Editor** to open the YAML configuration editor.
-- Copy and paste the custom configuration from the [Git repository](https://github.com/sensy-one/mmwave-sensor/blob/main/assets/config/plotly-v1.0.0.yaml) into the editor.
+- Copy and paste the custom configuration from the [Git repository](https://github.com/sensy-one/mmwave-sensor/blob/main/assets/config/) into the editor.
 
 **Replace the Placeholder IDs**  
 - Use your text editor’s find & replace feature (usually **Ctrl+F** on Windows or **Command+F** on Mac) to locate any `replace_me` placeholders in the YAML configuration.
