@@ -90,6 +90,22 @@ Keep your sensor up to date with regular OTA updates. We continuously refine per
 - Scroll down to the **OTA Update**, choose the downloaded firmware file, and click **Update**.  
   *(If the update page times out, simply refresh the page.)*
 
+## ⚙️ Build Your Own Solution
+
+For advanced users looking to create custom firmware, simply integrate the settings below into your yaml.
+
+```yaml
+esp32:
+  board: esp32-s3-devkitc-1
+
+uart:
+  tx_pin: GPIO15
+  rx_pin: GPIO14
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+```
+
 ## 🔧 Troubleshooting
 
 Even the most cutting-edge tech can have its off moments. If your sensor isn’t performing exactly as expected, don’t worry. A quick factory reset might be all you need for a fresh start.
