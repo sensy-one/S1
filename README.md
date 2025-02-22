@@ -99,6 +99,7 @@ esp32:
   board: esp32-s3-devkitc-1
 
 uart:
+  id:
   tx_pin: GPIO15
   rx_pin: GPIO14
   baud_rate: 256000
