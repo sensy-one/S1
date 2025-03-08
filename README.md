@@ -134,8 +134,12 @@ Have an idea? Let us know on Discord or the Issues page. Your input could shape 
 **In Development**  
 - Adding Bluetooth presence & proximity tracking to the sensor for improved presence sensing.
 - Enhancing the custom **Plotly Graph Card** with traveled path visualization.
-- Expanding the current zone setup with more detection and exclusion zones based on user feedback. 
 - Ability to switch between Metric and Imperial, with dedicated firmware for each.
+
+**Developed**  
+- Expanding the current zone setup with 10 zones in total.
+- Adding configurable detection range entity 
+- Expanding Plotly graph card to support 10 zones
 
 ## 💬 Let's Connect
 
