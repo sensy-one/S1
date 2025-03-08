@@ -84,7 +84,7 @@ Set up custom zones right from your Home Assistant dashboard. Our sensor provide
 Keep your sensor up to date with regular OTA updates. We continuously refine performance and add new functionalities to keep your sensor reliable and current.
 
 **Install OTA Updates**  
-- Download the latest ota firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/ota).
+- Download the latest ota firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/base/ota).
 - Go to **Devices and Services** and select **ESPHome**. Choose the sensor you want to update.  
 - Under **Device Info**, click **Visit** to open the sensor’s web server.
 - Scroll down to the **OTA Update**, choose the downloaded firmware file, and click **Update**.  
@@ -112,7 +112,7 @@ uart:
 Even the most cutting-edge tech can have its off moments. If your sensor isn’t performing exactly as expected, don’t worry. A quick factory reset might be all you need for a fresh start.
 
 **Install Factory Firmware**  
-- Download the latest factory firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/factory).  
+- Download the latest factory firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/base/factory).  
 - Plug the sensor into your PC via USB-C.  
 - Open the [Official ESPHome Web Wizard](https://web.esphome.io/?dashboard_wizard).  
 - Click **Connect** and select the appropriate COM port for your sensor.  
@@ -122,7 +122,7 @@ Even the most cutting-edge tech can have its off moments. If your sensor isn’t
 
 If you are using a low-capacity Home Assistant setup, such as an older device or a system with limited resources, you might experience performance issues due to the high data transmission rate. In version 1.0.1, the sensor sends data every 250ms. While this data rate is suitable for most Home Assistant setups, it may be too demanding for some systems. If you find it causing performance issues, you can switch to version 1.1.0, which reduces the update interval to 1 second, easing the load on your setup.
 
-- Download version 1.1.0 from our [GitHub repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/ota).  
+- Download version 1.0.2 (1s interval) from our [GitHub repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/custom/ota).  
 - Follow the [OTA](https://github.com/sensy-one/mmwave-sensor/tree/main?tab=readme-ov-file#-firmware-on-the-fly) installation steps mentioned above.  
 - Once installed, the sensor will send data every 1 second, reducing the load on your Home Assistant setup.  
 
