@@ -93,6 +93,7 @@ entities:
         hass.states["number.replace_me_zone_1_y_end"].state,
         hass.states["number.replace_me_zone_1_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 2 Box
     type: scatter
@@ -117,6 +118,7 @@ entities:
         hass.states["number.replace_me_zone_2_y_end"].state,
         hass.states["number.replace_me_zone_2_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 3 Box
     type: scatter
@@ -141,6 +143,7 @@ entities:
         hass.states["number.replace_me_zone_3_y_end"].state,
         hass.states["number.replace_me_zone_3_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 4 Box
     type: scatter
@@ -165,6 +168,7 @@ entities:
         hass.states["number.replace_me_zone_4_y_end"].state,
         hass.states["number.replace_me_zone_4_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 5 Box
     type: scatter
@@ -189,6 +193,7 @@ entities:
         hass.states["number.replace_me_zone_5_y_end"].state,
         hass.states["number.replace_me_zone_5_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 6 Box
     type: scatter
@@ -213,6 +218,7 @@ entities:
         hass.states["number.replace_me_zone_6_y_end"].state,
         hass.states["number.replace_me_zone_6_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 7 Box
     type: scatter
@@ -237,6 +243,7 @@ entities:
         hass.states["number.replace_me_zone_7_y_end"].state,
         hass.states["number.replace_me_zone_7_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 8 Box
     type: scatter
@@ -261,6 +268,7 @@ entities:
         hass.states["number.replace_me_zone_8_y_end"].state,
         hass.states["number.replace_me_zone_8_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 9 Box
     type: scatter
@@ -285,6 +293,7 @@ entities:
         hass.states["number.replace_me_zone_9_y_end"].state,
         hass.states["number.replace_me_zone_9_y_begin"].state
       ]
+  
   - entity: ""
     name: Zone 10 Box
     type: scatter
@@ -309,7 +318,7 @@ entities:
         hass.states["number.replace_me_zone_10_y_end"].state,
         hass.states["number.replace_me_zone_10_y_begin"].state
       ]
- 
+  
   - entity: ""
     name: Exclusion Zone
     type: scatter
@@ -371,6 +380,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_1_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 2 Label
     type: scatter
@@ -407,6 +417,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_2_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 3 Label
     type: scatter
@@ -443,6 +454,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_3_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 4 Label
     type: scatter
@@ -479,6 +491,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_4_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_4_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 5 Label
     type: scatter
@@ -515,6 +528,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_5_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_5_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 6 Label
     type: scatter
@@ -551,6 +565,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_6_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_6_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 7 Label
     type: scatter
@@ -587,6 +602,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_7_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_7_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 8 Label
     type: scatter
@@ -623,6 +639,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_8_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_8_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 9 Label
     type: scatter
@@ -659,6 +676,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_9_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_9_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Zone 10 Label
     type: scatter
@@ -695,6 +713,7 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_zone_10_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_zone_10_y_end"].state)) / 2)
         )
+  
   - entity: ""
     name: Exclusion Zone Label
     type: scatter
@@ -731,7 +750,199 @@ entities:
           : ((parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state) +
               parseFloat(hass.states["number.replace_me_exclusion_y_end"].state)) / 2)
         )
-
+  
+  - entity: ""
+    name: Target 1 Tail
+    type: scatter
+    mode: lines+markers
+    showlegend: false
+    line:
+      shape: linear
+      smoothing: 1
+      width: 4
+      color: rgba(78,53,206,1)
+    marker:
+      size: 6
+      color: rgba(78,53,206,1)
+    x: |
+      $ex (function(){
+        let x = parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state);
+        if(x === 0){
+          window.target1TailX = [];
+          return window.target1TailX;
+        }
+        window.target1TailX = window.target1TailX || [];
+        window.target1TailX.push(x);
+        if(window.target1TailX.length > 50){ window.target1TailX.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target1TailX, 5);
+      })()
+    y: |
+      $ex (function(){
+        let y = parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state);
+        if(y === 0){
+          window.target1TailY = [];
+          return window.target1TailY;
+        }
+        window.target1TailY = window.target1TailY || [];
+        window.target1TailY.push(y);
+        if(window.target1TailY.length > 50){ window.target1TailY.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target1TailY, 5);
+      })()
+  
+  - entity: ""
+    name: Target 2 Tail
+    type: scatter
+    mode: lines+markers
+    showlegend: false
+    line:
+      shape: linear
+      smoothing: 1
+      width: 4
+      color: rgba(78,53,206,1)
+    marker:
+      size: 6
+      color: rgba(78,53,206,1)
+    x: |
+      $ex (function(){
+        let x = parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state);
+        if(x === 0){
+          window.target2TailX = [];
+          return window.target2TailX;
+        }
+        window.target2TailX = window.target2TailX || [];
+        window.target2TailX.push(x);
+        if(window.target2TailX.length > 50){ window.target2TailX.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target2TailX, 5);
+      })()
+    y: |
+      $ex (function(){
+        let y = parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state);
+        if(y === 0){
+          window.target2TailY = [];
+          return window.target2TailY;
+        }
+        window.target2TailY = window.target2TailY || [];
+        window.target2TailY.push(y);
+        if(window.target2TailY.length > 50){ window.target2TailY.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target2TailY, 5);
+      })()
+  
+  - entity: ""
+    name: Target 3 Tail
+    type: scatter
+    mode: lines+markers
+    showlegend: false
+    line:
+      shape: linear
+      smoothing: 1
+      width: 4
+      color: rgba(78,53,206,1)
+    marker:
+      size: 6
+      color: rgba(78,53,206,1)
+    x: |
+      $ex (function(){
+        let x = parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state);
+        if(x === 0){
+          window.target3TailX = [];
+          return window.target3TailX;
+        }
+        window.target3TailX = window.target3TailX || [];
+        window.target3TailX.push(x);
+        if(window.target3TailX.length > 50){ window.target3TailX.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target3TailX, 5);
+      })()
+    y: |
+      $ex (function(){
+        let y = parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state);
+        if(y === 0){
+          window.target3TailY = [];
+          return window.target3TailY;
+        }
+        window.target3TailY = window.target3TailY || [];
+        window.target3TailY.push(y);
+        if(window.target3TailY.length > 50){ window.target3TailY.shift(); }
+        function smooth(arr, windowSize) {
+          let result = [];
+          for (let i = 0; i < arr.length; i++){
+            let start = Math.max(0, i - Math.floor(windowSize/2));
+            let end = Math.min(arr.length, i + Math.ceil(windowSize/2));
+            let sum = 0;
+            for(let j = start; j < end; j++){
+              sum += arr[j];
+            }
+            result.push(sum/(end - start));
+          }
+          return result;
+        }
+        return smooth(window.target3TailY, 5);
+      })()
+  
   - entity: ""
     name: Target 1
     type: scatter
@@ -741,8 +952,7 @@ entities:
       color: lightgrey
       symbol: circle
     text: >
-      $ex ("T1 (" + hass.states["sensor.replace_me_target_1_speed"].state
-      + " cm/s)")
+      $ex ("T1 (" + hass.states["sensor.replace_me_target_1_speed"].state + " cm/s)")
     textfont:
       color: lightgrey
     textposition: top center
@@ -757,11 +967,12 @@ entities:
     y:
       - |-
         $ex (
-          parseFloat(hass.states["sensor.replace_me_target_1_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0 &&
           parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state) === 0
           ? null
           : parseFloat(hass.states["sensor.replace_me_target_1_y_coordinate"].state)
         )
+  
   - entity: ""
     name: Target 2
     type: scatter
@@ -771,8 +982,7 @@ entities:
       color: lightgrey
       symbol: circle
     text: >
-      $ex ("T2 (" + hass.states["sensor.replace_me_target_2_speed"].state
-      + " cm/s)")
+      $ex ("T2 (" + hass.states["sensor.replace_me_target_2_speed"].state + " cm/s)")
     textfont:
       color: lightgrey
     textposition: top center
@@ -787,11 +997,12 @@ entities:
     y:
       - |-
         $ex (
-          parseFloat(hass.states["sensor.replace_me_target_2_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0 &&
           parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state) === 0
           ? null
           : parseFloat(hass.states["sensor.replace_me_target_2_y_coordinate"].state)
         )
+  
   - entity: ""
     name: Target 3
     type: scatter
@@ -801,8 +1012,7 @@ entities:
       color: lightgrey
       symbol: circle
     text: >
-      $ex ("T3 (" + hass.states["sensor.replace_me_target_3_speed"].state
-      + " cm/s)")
+      $ex ("T3 (" + hass.states["sensor.replace_me_target_3_speed"].state + " cm/s)")
     textfont:
       color: lightgrey
     textposition: top center
@@ -817,7 +1027,7 @@ entities:
     y:
       - |-
         $ex (
-          parseFloat(hass.states["sensor.replace_me_target_3_x_coordinate"].state) === 0 &&
+          parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0 &&
           parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state) === 0
           ? null
           : parseFloat(hass.states["sensor.replace_me_target_3_y_coordinate"].state)
