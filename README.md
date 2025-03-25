@@ -120,7 +120,7 @@ Even the most cutting-edge tech can have its off moments. If your sensor isn’t
 
 **Low-Capacity Home Assistant Setups**  
 
-If you are using a low-capacity Home Assistant setup, such as an older device or a system with limited resources, you might experience performance issues due to the high data transmission rate. In version 1.0.1, the sensor sends data every 250ms. While this data rate is suitable for most Home Assistant setups, it may be too demanding for some systems. If you find it causing performance issues, you can switch to version 1.1.0, which reduces the update interval to 1 second, easing the load on your setup.
+If you are using a low-capacity Home Assistant setup, such as an older device or a system with limited resources, you might experience performance issues due to the high data transmission rate. In version 1.0.1, the sensor sends data every 250ms. While this data rate is suitable for most Home Assistant setups, it may be too demanding for some systems. If you find it causing performance issues, you can switch to version 1.0.2, which reduces the update interval to 1 second, easing the load on your setup.
 
 - Download version 1.0.2 (1s interval) from our [GitHub repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/custom/ota).  
 - Follow the [OTA](https://github.com/sensy-one/mmwave-sensor/tree/main?tab=readme-ov-file#-firmware-on-the-fly) installation steps mentioned above.  
