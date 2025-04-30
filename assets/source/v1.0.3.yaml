@@ -12,9 +12,9 @@ esphome:
     priority: -100
     then:
       - lambda: 'static_cast<LD2450*>(id(ld2450))->read_firmware();'
-      - delay: 250ms
+      - delay: 500ms
       - lambda: 'static_cast<LD2450*>(id(ld2450))->read_mac_address();'
-      - delay: 250ms
+      - delay: 500ms
       - lambda: 'static_cast<LD2450*>(id(ld2450))->set_multi_target_tracking();'
 
 esp32:
@@ -37,21 +37,40 @@ esp32_improv:
   on_provisioned:
     then:
       - lambda: 'static_cast<LD2450*>(id(ld2450))->read_firmware();'
-      - delay: 250ms
+      - delay: 500ms
       - lambda: 'static_cast<LD2450*>(id(ld2450))->read_mac_address();'
-      - delay: 250ms
+      - delay: 500ms
       - lambda: 'static_cast<LD2450*>(id(ld2450))->set_multi_target_tracking();'
 
 api:
 
+logger:
+  level: DEBUG
+  logs:
+    default: ERROR
+    sensor: ERROR
+    text_sensor: ERROR
+    template: ERROR
+    uart: ERROR
+    wifi: ERROR
+    mdns: ERROR
+    esphome.core: ERROR
+    esp32_ble: ERROR
+    esp32_ble_server: ERROR
+    esp32_improv: ERROR
+    captive_portal: ERROR
+    web_server: ERROR
+    api: ERROR
+    ota: ERROR
+    number: ERROR
+    ld2450: DEBUG
+
 web_server:
   port: 80
+  log: false
 
 ota:
   platform: esphome
-
-logger:
-  level: ERROR
 
 uart:
   id: uart_ld2450
@@ -624,7 +643,7 @@ text_sensor:
   - platform: template
     name: "All Targets Count"
     icon: mdi:counter
-    update_interval: 250ms
+    update_interval: 500ms
     lambda: |-
       int count = 0;
       auto valid_target = [](float x, float y) -> bool {
@@ -656,7 +675,7 @@ text_sensor:
   - platform: template
     name: "Any Presence"
     icon: mdi:home-account
-    update_interval: 250ms
+    update_interval: 500ms
     lambda: |-
       auto valid_target = [](float x, float y) -> bool {
         return !(fabs(x) < 0.001 && fabs(y) < 0.001);
@@ -698,7 +717,7 @@ text_sensor:
   - platform: template
     name: "Any Movement"
     icon: mdi:motion-sensor
-    update_interval: 250ms
+    update_interval: 500ms
     lambda: |-
       float threshold = id(any_movement_threshold).state;
       auto valid_target = [](float x, float y) -> bool {
@@ -732,118 +751,8 @@ text_sensor:
       return movement_detected ? std::string("Detected") : std::string("Clear");
 
   - platform: template
-    name: "All Targets Count"
-    icon: mdi:counter
-    update_interval: 250ms
-    lambda: |-
-      int count = 0;
-      auto valid_target = [](float x, float y) -> bool {
-        return !(fabs(x) < 0.001 && fabs(y) < 0.001);
-      };
-      auto in_exclusion = [=](float x, float y) -> bool {
-        float ex_x_begin = id(exclusion_x_begin).state;
-        float ex_x_end   = id(exclusion_x_end).state;
-        float ex_y_begin = id(exclusion_y_begin).state;
-        float ex_y_end   = id(exclusion_y_end).state;
-        float ex_x_min = std::min(ex_x_begin, ex_x_end);
-        float ex_x_max = std::max(ex_x_begin, ex_x_end);
-        float ex_y_min = std::min(ex_y_begin, ex_y_end);
-        float ex_y_max = std::max(ex_y_begin, ex_y_end);
-        return (x >= ex_x_min) && (x <= ex_x_max) &&
-               (y >= ex_y_min) && (y <= ex_y_max);
-      };
-      if ( valid_target(id(target1_x).state, id(target1_y).state) &&
-           !in_exclusion(id(target1_x).state, id(target1_y).state) )
-        count++;
-      if ( valid_target(id(target2_x).state, id(target2_y).state) &&
-           !in_exclusion(id(target2_x).state, id(target2_y).state) )
-        count++;
-      if ( valid_target(id(target3_x).state, id(target3_y).state) &&
-           !in_exclusion(id(target3_x).state, id(target3_y).state) )
-        count++;
-      return std::to_string(count);
-
-  - platform: template
-    name: "Any Presence"
-    icon: mdi:home-account
-    update_interval: 250ms
-    lambda: |-
-      auto valid_target = [](float x, float y) -> bool {
-        return !(fabs(x) < 0.001 && fabs(y) < 0.001);
-      };
-      auto in_exclusion = [=](float x, float y) -> bool {
-        float ex_x_begin = id(exclusion_x_begin).state;
-        float ex_x_end   = id(exclusion_x_end).state;
-        float ex_y_begin = id(exclusion_y_begin).state;
-        float ex_y_end   = id(exclusion_y_end).state;
-        float ex_x_min = std::min(ex_x_begin, ex_x_end);
-        float ex_x_max = std::max(ex_x_begin, ex_x_end);
-        float ex_y_min = std::min(ex_y_begin, ex_y_end);
-        float ex_y_max = std::max(ex_y_begin, ex_y_end);
-        return (x >= ex_x_min) && (x <= ex_x_max) &&
-               (y >= ex_y_min) && (y <= ex_y_max);
-      };
-      bool detected = false;
-      if ( valid_target(id(target1_x).state, id(target1_y).state) &&
-           !in_exclusion(id(target1_x).state, id(target1_y).state) )
-        detected = true;
-      if ( valid_target(id(target2_x).state, id(target2_y).state) &&
-           !in_exclusion(id(target2_x).state, id(target2_y).state) )
-        detected = true;
-      if ( valid_target(id(target3_x).state, id(target3_y).state) &&
-           !in_exclusion(id(target3_x).state, id(target3_y).state) )
-        detected = true;
-      static unsigned long no_presence_start = 0;
-      if (detected) {
-        no_presence_start = millis();
-        return std::string("Detected");
-      } else {
-        int delay_sec = (int) id(any_presence_delay).state;
-        if (no_presence_start == 0 || (millis() - no_presence_start) < (unsigned long)(delay_sec * 1000))
-          return std::string("Detected");
-        else
-          return std::string("Clear");
-      }
-
-  - platform: template
-    name: "Any Movement"
-    icon: mdi:motion-sensor
-    update_interval: 250ms
-    lambda: |-
-      float threshold = id(any_movement_threshold).state;
-      auto valid_target = [](float x, float y) -> bool {
-        return !(fabs(x) < 0.001 && fabs(y) < 0.001);
-      };
-      auto in_exclusion = [=](float x, float y) -> bool {
-        float ex_x_begin = id(exclusion_x_begin).state;
-        float ex_x_end   = id(exclusion_x_end).state;
-        float ex_y_begin = id(exclusion_y_begin).state;
-        float ex_y_end   = id(exclusion_y_end).state;
-        float ex_x_min = std::min(ex_x_begin, ex_x_end);
-        float ex_x_max = std::max(ex_x_begin, ex_x_end);
-        float ex_y_min = std::min(ex_y_begin, ex_y_end);
-        float ex_y_max = std::max(ex_y_begin, ex_y_end);
-        return (x >= ex_x_min) && (x <= ex_x_max) &&
-               (y >= ex_y_min) && (y <= ex_y_max);
-      };
-      bool movement_detected = false;
-      if ( valid_target(id(target1_x).state, id(target1_y).state) &&
-           !in_exclusion(id(target1_x).state, id(target1_y).state) &&
-           (fabs(id(target1_speed).state) > threshold) )
-        movement_detected = true;
-      if ( valid_target(id(target2_x).state, id(target2_y).state) &&
-           !in_exclusion(id(target2_x).state, id(target2_y).state) &&
-           (fabs(id(target2_speed).state) > threshold) )
-        movement_detected = true;
-      if ( valid_target(id(target3_x).state, id(target3_y).state) &&
-           !in_exclusion(id(target3_x).state, id(target3_y).state) &&
-           (fabs(id(target3_speed).state) > threshold) )
-        movement_detected = true;
-      return movement_detected ? std::string("Detected") : std::string("Clear");
-
-  - platform: template
     name: "Zone 1 Targets Count"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:counter
     lambda: |-
       float x_begin = id(zone1_x_begin).state;
@@ -890,7 +799,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 1 Presence"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:account-box-outline
     lambda: |-
       float x_begin = id(zone1_x_begin).state;
@@ -949,7 +858,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 1 Movement"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:motion-sensor
     lambda: |-
       float x_begin = id(zone1_x_begin).state;
@@ -998,7 +907,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 2 Targets Count"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:counter
     lambda: |-
       float x_begin = id(zone2_x_begin).state;
@@ -1045,7 +954,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 2 Presence"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:account-box-outline
     lambda: |-
       float x_begin = id(zone2_x_begin).state;
@@ -1104,7 +1013,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 2 Movement"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:motion-sensor
     lambda: |-
       float x_begin = id(zone2_x_begin).state;
@@ -1153,7 +1062,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 3 Targets Count"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:counter
     lambda: |-
       float x_begin = id(zone3_x_begin).state;
@@ -1200,7 +1109,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 3 Presence"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:account-box-outline
     lambda: |-
       float x_begin = id(zone3_x_begin).state;
@@ -1259,7 +1168,7 @@ text_sensor:
 
   - platform: template
     name: "Zone 3 Movement"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:motion-sensor
     lambda: |-
       float x_begin = id(zone3_x_begin).state;
@@ -1308,7 +1217,7 @@ text_sensor:
 
   - platform: template
     name: "Target 1 Direction"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:sign-direction
     lambda: |-
       if (fabs(id(target1_x).state) < 0.001 && fabs(id(target1_y).state) < 0.001) {
@@ -1326,7 +1235,7 @@ text_sensor:
 
   - platform: template
     name: "Target 2 Direction"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:sign-direction
     lambda: |-
       if (fabs(id(target2_x).state) < 0.001 && fabs(id(target2_y).state) < 0.001) {
@@ -1344,7 +1253,7 @@ text_sensor:
 
   - platform: template
     name: "Target 3 Direction"
-    update_interval: 250ms
+    update_interval: 500ms
     icon: mdi:sign-direction
     lambda: |-
       if (fabs(id(target3_x).state) < 0.001 && fabs(id(target3_y).state) < 0.001) {
