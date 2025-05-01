@@ -264,6 +264,7 @@ class LD2450 : public Component, public UARTDevice {
         target1_speed->publish_state(speed_val);
         target1_distance_resolution->publish_state(dist_res_cm);
         target1_distance->publish_state(calc_distance);
+        ESP_LOGD("ld2450", "Target 1: X=%.2f cm, Y=%.2f cm", x_cm, y_cm);
       } else if (target == 1) {
         target2_x->publish_state(x_cm);
         target2_y->publish_state(y_cm);
