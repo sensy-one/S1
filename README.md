@@ -18,7 +18,7 @@ Track up to three targets simultaneously in real time. The Hi-Link LD2450 accura
 
 **Customizable Detection Zones**  
 
-Our sensor offers flexible monitoring with three detection zones and one exclusion zone. Each detection zone comes with three dedicated sensors that measure movement, presence, and target count, providing detailed insight into activity. Adjustable motion thresholds and timeouts allow you to fine-tune the sensor’s sensitivity and response, ensuring optimal performance in any environment.
+Our sensor offers flexible monitoring with up to 10 customizable detection zones and one exclusion zone. Each detection zone includes three dedicated sensors that measure movement, presence, and target count, providing detailed insights into activity. Adjustable motion thresholds and timeouts allow you to fine-tune the sensor’s sensitivity and response, ensuring optimal performance in any environment.
 
 **Power-Packed Performance**  
 
@@ -64,7 +64,7 @@ Add an interactive map to your Home Assistant dashboard. The Plotly Graph Card a
 
 ## 📍 Get in the Zone
 
-Set up custom zones right from your Home Assistant dashboard. Our sensor provides 3 detection zones and 1 exclusion zone. Each zone reports a presence sensor, a movement sensor, and a target count sensor. Giving you all the data you need to trigger precise, zone-based automations.
+Set up custom zones right from your Home Assistant dashboard. Our sensor provides op to 10 detection zones and 1 exclusion zone. Each zone reports a presence sensor, a movement sensor, and a target count sensor. Giving you all the data you need to trigger precise, zone-based automations.
 
 **Set Horizontal Boundaries**  
 - **X Begin**: Enter the leftmost coordinate of your zone.  
@@ -121,26 +121,11 @@ Even the most cutting-edge tech can have its off moments. If your sensor isn’t
 
 **Low-Capacity Home Assistant Setups**  
 
-If you are using a low-capacity Home Assistant setup, such as an older device or a system with limited resources, you might experience performance issues due to the high data transmission rate. In version 1.0.1, the sensor sends data every 250ms. While this data rate is suitable for most Home Assistant setups, it may be too demanding for some systems. If you find it causing performance issues, you can switch to version 1.0.2, which reduces the update interval to 1 second, easing the load on your setup.
+If you are using a low-capacity Home Assistant setup, such as an older device or a system with limited resources, you might experience performance issues due to the high data transmission rate. In version 1.0.4, the sensor sends data every 500ms. While this data rate is suitable for most Home Assistant setups, it may be too demanding for some systems. If you find it causing performance issues, you can switch to version 1.0.4 (1S), which reduces the update interval to 1 second, easing the load on your setup.
 
-- Download version 1.0.2 (1s interval) from our [GitHub repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/custom/ota).  
+- Download version 1.0.4 (1S) from our [GitHub repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/custom/ota).  
 - Follow the [OTA](https://github.com/sensy-one/mmwave-sensor/tree/main?tab=readme-ov-file#-firmware-on-the-fly) installation steps mentioned above.  
 - Once installed, the sensor will send data every 1 second, reducing the load on your Home Assistant setup.  
-
-## 🛤️ Roadmap Ahead
-
-We’re always working on new features and expanding functionality to make the sensor even more capable.
-Have an idea? Let us know on Discord or the Issues page. Your input could shape the next big update!
-
-**In Development**  
-- Adding Bluetooth presence & proximity tracking to the sensor for improved presence sensing.
-- Ability to switch between Metric and Imperial, with dedicated firmware for each.
-
-**Developed**  
-- Expanding the current zone setup with 10 zones in total.
-- Adding configurable detection range entity 
-- Expanding **Plotly Graph Card** to support 10 zones
-- Enhancing the custom **Plotly Graph Card** with traveled path visualization.
 
 ## 💬 Let's Connect
 
