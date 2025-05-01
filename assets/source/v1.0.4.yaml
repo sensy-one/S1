@@ -3,11 +3,11 @@ esphome:
   friendly_name: Sensy One 
   name_add_mac_suffix: True
   project: 
-    name: Sensy-One.S1
-    version: v1.0.3
+    name: Sensy-One.S1 mmWave Sensor
+    version: v1.0.4
 
   includes:
-    - v1.0.3.h
+    - v1.0.4.h
   on_boot:
     priority: -100
     then:
@@ -74,8 +74,8 @@ ota:
 
 uart:
   id: uart_ld2450
-  tx_pin: GPIO15
-  rx_pin: GPIO14
+  tx_pin: GPIO15  #RX-LD2450
+  rx_pin: GPIO14  #TX-LD2450
   baud_rate: 256000
   parity: NONE
   stop_bits: 1
@@ -574,7 +574,7 @@ text_sensor:
     entity_category: diagnostic
     icon: mdi:git
     lambda: |-
-      return std::string("v1.0.3");
+      return std::string("v1.0.4");
 
   - platform: template
     name: "ESP32 | MAC"
@@ -749,6 +749,7 @@ text_sensor:
           (fabs(id(target3_speed).state) > threshold) )
         movement_detected = true;
       return movement_detected ? std::string("Detected") : std::string("Clear");
+
 
   - platform: template
     name: "Zone 1 Targets Count"
