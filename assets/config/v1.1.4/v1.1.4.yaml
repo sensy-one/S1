@@ -1,0 +1,428 @@
+type: custom:plotly-graph
+title: null
+refresh_interval: 0.05
+layout:
+  height: 300
+  margin:
+    l: 50
+    r: 35
+    t: 15
+    b: 67.5
+  showlegend: false
+  hovermode: false
+  xaxis:
+    dtick: 100
+    type: number
+    fixedrange: true
+    showgrid: true
+    showticklabels: true
+    zeroline: false
+    showline: false
+    tickangle: -90
+    tickfont:
+      size: 14
+    tickpadding: 10
+    range:
+      - -605
+      - 605
+  yaxis:
+    dtick: 100
+    type: number
+    fixedrange: true
+    showgrid: true
+    showticklabels: true
+    zeroline: true
+    showline: false
+    tickfont:
+      size: 14
+    tickpadding: 10
+    range:
+      - 605
+      - 0
+entities:
+  - entity: ""
+    name: Coverage
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      smoothing: 1
+      width: 2
+      color: grey
+      dash: dot
+    x: |
+      $ex (function(){
+        let pts = [], sx = 600 * Math.sin(60 * Math.PI/180);
+        for (let t = 0; t <= 1; t += 0.1) pts.push(sx * t);
+        for (let a = 60; a >= -60; a -= 2) pts.push(600 * Math.sin(a * Math.PI/180));
+        let ex = 600 * Math.sin(-60 * Math.PI/180);
+        for (let t = 1; t >= 0; t -= 0.1) pts.push(ex * t);
+        return pts;
+      })()
+    "y": |
+      $ex (function(){
+        let pts = [], sy = 600 * Math.cos(60 * Math.PI/180);
+        for (let t = 0; t <= 1; t += 0.1) pts.push(sy * t);
+        for (let a = 60; a >= -60; a -= 2) pts.push(600 * Math.cos(a * Math.PI/180));
+        let ey = 600 * Math.cos(-60 * Math.PI/180);
+        for (let t = 1; t >= 0; t -= 0.1) pts.push(ey * t);
+        return pts;
+      })()
+  - entity: ""
+    name: Target 1
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightgrey
+      symbol: circle-open
+    text: >
+      $ex ("T1 (" +
+      parseInt(hass.states["sensor.replace_me_target_1_speed"].state)
+      + " cm/s)")
+    textfont:
+      color: lightgrey
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_1_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_1_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_1_x"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_1_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_1_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_1_y"].state)
+        )
+  - entity: ""
+    name: Target 2
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightblue
+      symbol: circle-open
+    text: >
+      $ex ("T2 (" +
+      parseInt(hass.states["sensor.replace_me_target_2_speed"].state)
+      + " cm/s)")
+    textfont:
+      color: lightgrey
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_2_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_2_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_2_x"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_2_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_2_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_2_y"].state)
+        )
+  - entity: ""
+    name: Target 3
+    type: scatter
+    mode: markers+text
+    marker:
+      size: 12
+      color: lightgrey
+      symbol: circle-open
+    text: >
+      $ex ("T3 (" +
+      parseInt(hass.states["sensor.replace_me_target_3_speed"].state)
+      + " cm/s)")
+    textfont:
+      color: lightgreen
+    textposition: top center
+    x:
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_3_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_3_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_3_x"].state)
+        )
+    "y":
+      - |-
+        $ex (
+          parseInt(hass.states["sensor.replace_me_target_3_x"].state) === 0 &&
+          parseInt(hass.states["sensor.replace_me_target_3_y"].state) === 0
+          ? null
+          : parseInt(hass.states["sensor.replace_me_target_3_y"].state)
+        )
+  - entity: ""
+    name: Zone 1 Box
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      color: rgb(100,100,100)
+      width: 2
+    x: |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state)
+      ]
+    "y": |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state)
+      ]
+  - entity: ""
+    name: Zone 2 Box
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      color: rgb(100,100,100)
+      width: 2
+    x: |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state)
+      ]
+    "y": |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state)
+      ]
+  - entity: ""
+    name: Zone 3 Box
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      color: rgb(100,100,100)
+      width: 2
+    x: |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_x_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state)
+      ]
+    "y": |
+      $ex [
+        parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_y_end"].state),
+        parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state)
+      ]
+  - entity: ""
+    name: Exclusion Zone
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      color: rgb(180,0,0)
+      width: 2
+    x: |
+      $ex [
+        parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_x_end"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_x_end"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state)
+      ]
+    "y": |
+      $ex [
+        parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_y_end"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_y_end"].state),
+        parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state)
+      ]
+  - entity: ""
+    name: Zone 1 Label
+    type: scatter
+    mode: text
+    showlegend: false
+    text: |
+      $ex (
+        (parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_1_x_end"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_1_y_end"].state) === 0)
+        ? ""
+        : "Z1"
+      )
+    textfont:
+      size: 12
+      color: rgb(100,100,100)
+    textposition: middle center
+    x:
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_1_x_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_1_x_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_1_x_end"].state))
+              / 2
+            )
+        )
+    "y":
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_1_y_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_1_y_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_1_y_end"].state))
+              / 2
+            )
+        )
+  - entity: ""
+    name: Zone 2 Label
+    type: scatter
+    mode: text
+    showlegend: false
+    text: |
+      $ex (
+        (parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_2_x_end"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_2_y_end"].state) === 0)
+        ? ""
+        : "Z2"
+      )
+    textfont:
+      size: 12
+      color: rgb(100,100,100)
+    textposition: middle center
+    x:
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_2_x_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_2_x_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_2_x_end"].state))
+              / 2
+            )
+        )
+    "y":
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_2_y_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_2_y_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_2_y_end"].state))
+              / 2
+            )
+        )
+  - entity: ""
+    name: Zone 3 Label
+    type: scatter
+    mode: text
+    showlegend: false
+    text: |
+      $ex (
+        (parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_3_x_end"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_zone_3_y_end"].state) === 0)
+        ? ""
+        : "Z3"
+      )
+    textfont:
+      size: 12
+      color: rgb(100,100,100)
+    textposition: middle center
+    x:
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_3_x_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_3_x_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_3_x_end"].state))
+              / 2
+            )
+        )
+    "y":
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_zone_3_y_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_zone_3_y_begin"].state) +
+               parseFloat(hass.states["number.replace_me_zone_3_y_end"].state))
+              / 2
+            )
+        )
+  - entity: ""
+    name: Exclusion Zone Label
+    type: scatter
+    mode: text
+    showlegend: false
+    text: |
+      $ex (
+        (parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_exclusion_x_end"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state) === 0 &&
+         parseFloat(hass.states["number.replace_me_exclusion_y_end"].state) === 0)
+        ? ""
+        : "E1"
+      )
+    textfont:
+      size: 12
+      color: rgb(180,0,0)
+    textposition: middle center
+    x:
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_exclusion_x_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_exclusion_x_begin"].state) +
+               parseFloat(hass.states["number.replace_me_exclusion_x_end"].state))
+              / 2
+            )
+        )
+    "y":
+      - |-
+        $ex (
+          (parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state) === 0 &&
+           parseFloat(hass.states["number.replace_me_exclusion_y_end"].state) === 0)
+          ? null
+          : (
+              (parseFloat(hass.states["number.replace_me_exclusion_y_begin"].state) +
+               parseFloat(hass.states["number.replace_me_exclusion_y_end"].state))
+              / 2
+            )
+        )
