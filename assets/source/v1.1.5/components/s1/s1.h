@@ -129,8 +129,15 @@ inline void LD2450::handle_ack_data(const uint8_t *buffer, int len) {
   if (buffer[0]!=0xFD||buffer[1]!=0xFC||buffer[2]!=0xFB||buffer[3]!=0xFA) return;
   if (buffer[7]!=0x01) return;
   if (twoByteToUint(buffer[8],buffer[9])!=0x00) return;
+
   uint8_t cmd = buffer[6];
-  if (tracking_mode_) tracking_mode_->publish_state(cmd==0x80?"Single":"Multi");
+  if (tracking_mode_) {
+    if (cmd == 0x80) {
+      tracking_mode_->publish_state("Single");
+    } else if (cmd == 0x90) {
+      tracking_mode_->publish_state("Multi");
+    }
+  }
 }
 
 inline void LD2450::parse_frame(const uint8_t *b) {
