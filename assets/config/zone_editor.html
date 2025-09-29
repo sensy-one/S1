@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sensy-One Zone Editor</title>
+<style>
+  :root{
+    --bg:#06070a; --panel:#0a0c11; --panel-2:#0b0d12; --ctrl:#10131a; --bd:#171b22;
+    --fg:#e6eaf1; --muted:#9aa3ad; --ok:#22c55e; --err:#ef4444;
+    --canvas:#0a0d12; --fov:#5f7cff;
+    --z-norm:#69b1ff; --z-norm-fill:rgba(105,177,255,.16); --z-norm-dim:#3c6fa9; --z-norm-dim-fill:rgba(105,177,255,.08);
+    --z-excl:#ff6b6b; --z-excl-fill:rgba(255,107,107,.16); --z-excl-dim:#a84848; --z-excl-dim-fill:rgba(255,107,107,.08);
+    --pulse:#22c55e;
+    --grid:#1e2431;
+    --grid-ax:#2a3242;
+    --ui-scale:1;
+    --pad:calc(12px * var(--ui-scale));
+    --gap:calc(12px * var(--ui-scale));
+    --btnh:calc(44px * var(--ui-scale));
+    --radius:calc(14px * var(--ui-scale));
+    --fs:calc(14px * var(--ui-scale));
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs)/1.4 system-ui,Segoe UI,Roboto,Arial}
+
+  .container{
+    width:100%;min-height:100vh;margin:0 auto;padding:var(--pad);
+    display:grid;gap:var(--gap);
+    grid-template-columns:minmax(0,1fr) clamp(360px,40vw,680px);
+    align-items:start;max-width:1800px;
+  }
+  @media (max-width:1150px){ .container{grid-template-columns:1fr} }
+
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--bd);border-radius:var(--radius);min-width:0}
+  .canvas-wrap{padding:calc(8px * var(--ui-scale))}
+  #canvas{display:block;width:100%;height:auto;aspect-ratio:1100/600;border-radius:calc(10px * var(--ui-scale));image-rendering:auto}
+
+  .panel{padding:var(--pad);display:flex;flex-direction:column;gap:var(--gap)}
+  .section{background:var(--ctrl);border:1px solid var(--bd);border-radius:calc(12px * var(--ui-scale));padding:var(--pad);display:flex;flex-direction:column;gap:calc(10px * var(--ui-scale));min-width:0}
+  .row{display:flex;gap:calc(10px * var(--ui-scale));align-items:center}
+  .row.equal>*{flex:1 1 0;min-width:0}
+
+  input,button{
+    height:var(--btnh);
+    border-radius:calc(10px * var(--ui-scale));
+    border:1px solid #1a1f2a;
+    background:#121620;color:var(--fg);
+    padding:0 calc(12px * var(--ui-scale));
+    font:inherit;outline:none;
+  }
+  input::placeholder{color:#667084}
+  button{cursor:pointer;transition:transform .04s,background-color .15s,border-color .15s;white-space:nowrap;text-align:center}
+  .btn-primary{background:#151b28;border-color:#202638}
+  .btn-primary:hover{background:#192132;border-color:#2a3550}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-plain{background:#121620;border-color:#1a1f2a}
+  .btn-plain:hover{background:#151a24;border-color:#212836}
+
+  .zones{display:grid;grid-template-columns:1fr;gap:calc(10px * var(--ui-scale))}
+  .zone-btn.active{background:#151e2c;border-color:#2a3550}
+
+  .status{font-size:calc(12px * var(--ui-scale));color:var(--muted);display:flex;align-items:center;gap:calc(8px * var(--ui-scale))}
+  .dot{width:calc(8px * var(--ui-scale));height:calc(8px * var(--ui-scale));border-radius:50%;background:#343a46}
+  .dot.ok{background:var(--ok)} .dot.err{background:var(--err)}
+  .title{font-size:calc(16px * var(--ui-scale));font-weight:600;color:#cfd6e2}
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  input[type=number]{ -moz-appearance:textfield; appearance:textfield; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div id="canvasCard" class="card canvas-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="main" class="card panel">
+      <div class="section">
+        <div class="title">Device</div>
+        <div class="row equal">
+          <input id="host" placeholder="Host IP (e.g., 192.168.0.44)" />
+          <button id="connectBtn" class="btn-primary">Connect</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="title">Detection Range</div>
+        <div class="row equal">
+          <input id="rangeInput" type="number" min="0" max="600" step="1" placeholder="0 – 600 cm" />
+          <button id="rangeSetBtn" class="btn-primary">Set</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="title">Zones</div>
+        <div class="zones">
+          <button class="zone-btn btn-plain" data-zone="1">Zone 1</button>
+          <button class="zone-btn btn-plain" data-zone="2">Zone 2</button>
+          <button class="zone-btn btn-plain" data-zone="3">Zone 3</button>
+          <button class="zone-btn btn-plain" data-zone="excl">Exclusion Zone</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="title">Actions</div>
+        <div class="row equal">
+          <button id="saveBtn" class="btn-primary">Save</button>
+          <button id="clearBtn" class="btn-plain">Clear</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="status">
+          <span id="sDot" class="dot"></span>
+          <span id="sText">Idle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(()=> {
+  const X_MIN=-520, X_MAX=520, Y_MIN=0, Y_MAX=600, WORLD_W=X_MAX-X_MIN, WORLD_H=Y_MAX-Y_MIN;
+  const MAX_RANGE=600, MAX_POINTS=8, FOV_DEG=120, GRID=100;
+
+  const $=(id)=>document.getElementById(id);
+  const hostEl=$('host'), connectBtn=$('connectBtn'), saveBtn=$('saveBtn'), clearBtn=$('clearBtn');
+  const rangeInput=$('rangeInput'), rangeSetBtn=$('rangeSetBtn');
+  const zoneBtns=[...document.querySelectorAll('[data-zone]')];
+  const cvs=$('canvas'), ctx=cvs.getContext('2d',{alpha:true,desynchronized:true});
+  const canvasCard=$('canvasCard'), sDot=$('sDot'), sText=$('sText'), main=$('main');
+
+  const livePos={1:{x:NaN,y:NaN},2:{x:NaN,y:NaN},3:{x:NaN,y:NaN}};
+  const zones={'1':[],'2':[],'3':[],'excl':[]};
+  let dragIdx=null, currentZone='1', detRange=MAX_RANGE, rangeId=null;
+
+  const saved=localStorage.getItem('zone_device_host')||''; if(saved) hostEl.value=saved;
+
+  function device(){ let h=hostEl.value.trim(); if(!h) return ''; if(!/^https?:\/\//i.test(h)) h='http://'+h; return h.replace(/\/+$/,''); }
+  function setStatus(kind,msg){ sDot.className='dot'+(kind?(' '+kind):''); sText.textContent=msg; }
+  const sleep=(ms)=>new Promise(res=>setTimeout(res,ms));
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  const cssVar=(name)=>getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  async function apiGet(domain,id){ const url=`${device()}/${domain}/${id}`; const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(`GET ${url} -> ${r.status}`); return r.json(); }
+  async function apiPost(domain,id,method,params={}){ const qs=new URLSearchParams(params).toString(); const url=`${device()}/${domain}/${id}/${method}${qs?`?${qs}`:''}`; const r=await fetch(url,{method:'POST'}); if(!r.ok) throw new Error(`POST ${url} -> ${r.status}`); }
+  async function postNumberWithRetry(id,value,tries=3,baseDelay=60){ let attempt=0,delay=baseDelay; for(;;){ try{ await apiPost('number',id,'set',{value}); return; }catch(e){ attempt++; if(attempt>=tries) throw e; await sleep(delay); delay*=2; } } }
+
+  function zoneIds(z){ if(z==='excl'){ return {label:'Exclusion Zone',count:'exclusion_zone_points_count',x:i=>`exclusion_zone_p${i}_x`,y:i=>`exclusion_zone_p${i}_y`}; } return {label:`Zone ${z}`,count:`zone_${z}_points_count`,x:i=>`zone_${z}_p${i}_x`,y:i=>`zone_${z}_p${i}_y`}; }
+
+  let cssW=0, cssH=0;
+  function applyUiScale(scale){ document.documentElement.style.setProperty('--ui-scale',String(scale)); }
+  function twoColumn(){ return window.matchMedia('(min-width: 1150px)').matches; }
+
+  function resizeCanvas(){
+    const pad=16, maxW=canvasCard.clientWidth-pad, maxH=Math.max(360,Math.floor(window.innerHeight*0.70));
+    const sc=Math.min(maxW/WORLD_W, maxH/WORLD_H);
+    cssW=Math.max(600,Math.floor(WORLD_W*sc));
+    cssH=Math.max(420,Math.floor(WORLD_H*sc));
+    const dpr=Math.max(1,Math.floor(window.devicePixelRatio||1));
+    cvs.width=Math.floor(cssW*dpr); cvs.height=Math.floor(cssH*dpr);
+    cvs.style.width=cssW+'px'; cvs.style.height=cssH+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function fitPanelScale(){
+    if(!twoColumn()){ applyUiScale(1); main.style.height='auto'; return; }
+    const base=1100; let scale=Math.max(0.6,Math.min(1.6,cssW/base));
+    applyUiScale(scale);
+    const h=canvasCard.getBoundingClientRect().height;
+    let guard=20;
+    while(main.scrollHeight>h && scale>0.6 && guard-->0){
+      scale=Math.max(0.6, +(scale-0.05).toFixed(2));
+      applyUiScale(scale);
+    }
+    main.style.height=Math.round(h)+'px';
+  }
+
+  const toPxX=x=>(x-X_MIN)/WORLD_W*cssW, toPxY=y=>(y-Y_MIN)/WORLD_H*cssH;
+  const toCmX=px=>X_MIN+(px/cssW)*WORLD_W, toCmY=py=>Y_MIN+(py/cssH)*WORLD_H;
+
+  function makeFovPoints(range){
+    const pts=[], half=FOV_DEG/2, rad=d=>d*Math.PI/180;
+    for(let a=half;a>=-half;a-=1.5) pts.push({x:range*Math.sin(rad(a)),y:range*Math.cos(rad(a))});
+    for(let t=1;t>=0;t-=0.1){ const a=-half; pts.push({x:range*Math.sin(rad(a))*t,y:range*Math.cos(rad(a))*t}); }
+    for(let t=0;t<=1;t+=0.1){ const a=+half; pts.push({x:range*Math.sin(rad(a))*t,y:range*Math.cos(rad(a))*t}); }
+    return pts;
+  }
+
+  function drawGrid(){
+  ctx.save();
+  ctx.lineWidth = 1;
+  const gridColor = cssVar('--grid') || '#1e2431';
+  const alpha = 0.6;
+
+  for(let x = Math.ceil(X_MIN/GRID)*GRID; x <= X_MAX; x += GRID){
+    const px = Math.round(toPxX(x)) + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(px, Math.round(toPxY(Y_MIN)) + 0.5);
+    ctx.lineTo(px, Math.round(toPxY(Y_MAX)) + 0.5);
+    ctx.strokeStyle = gridColor;
+    ctx.globalAlpha = alpha;
+    ctx.stroke();
+  }
+
+  for(let y = Math.ceil(Y_MIN/GRID)*GRID; y <= Y_MAX; y += GRID){
+    const py = Math.round(toPxY(y)) + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(Math.round(toPxX(X_MIN)) + 0.5, py);
+    ctx.lineTo(Math.round(toPxX(X_MAX)) + 0.5, py);
+    ctx.strokeStyle = gridColor;
+    ctx.globalAlpha = alpha;
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+
+  function drawPolygon(pts,style){
+    if(pts.length<2) return;
+    ctx.beginPath(); ctx.moveTo(toPxX(pts[0].x),toPxY(pts[0].y));
+    for(let i=1;i<pts.length;i++) ctx.lineTo(toPxX(pts[i].x),toPxY(pts[i].y));
+    if(pts.length>=3) ctx.closePath();
+    if(style.fill){ ctx.globalAlpha=style.fillAlpha??1; ctx.fillStyle=style.fill; ctx.fill(); }
+    if(style.stroke){ ctx.globalAlpha=1; ctx.lineWidth=style.width??2; ctx.strokeStyle=style.stroke; ctx.stroke(); }
+    ctx.globalAlpha=1;
+  }
+  function zoneStyle(key,active){
+    const isExcl=key==='excl';
+    if(active){ return isExcl?{fill:cssVar('--z-excl-fill'),stroke:cssVar('--z-excl'),width:2.4,fillAlpha:1}:{fill:cssVar('--z-norm-fill'),stroke:cssVar('--z-norm'),width:2.4,fillAlpha:1}; }
+    return isExcl?{fill:cssVar('--z-excl-dim-fill'),stroke:cssVar('--z-excl-dim'),width:1.6,fillAlpha:1}:{fill:cssVar('--z-norm-dim-fill'),stroke:cssVar('--z-norm-dim'),width:1.6,fillAlpha:1};
+  }
+
+  function drawHandles(pts){
+    const color=currentZone==='excl'?cssVar('--z-excl'):cssVar('--z-norm');
+    for(let i=0;i<pts.length;i++){
+      const px=toPxX(pts[i].x), py=toPxY(pts[i].y);
+      ctx.beginPath(); ctx.arc(px,py,7,0,Math.PI*2);
+      ctx.fillStyle=i===dragIdx?'#22c55e':color; ctx.fill();
+    }
+  }
+
+  function drawTargets(){
+    const color = cssVar('--pulse') || '#a855f7';
+    const now = performance.now(), period = 1200, baseR = 6, ringMax = 18;
+    for (const n of [1,2,3]){
+      const p = livePos[n];
+      if(!p || !Number.isFinite(p.x) || !Number.isFinite(p.y) || p.x===0 || p.y===0) continue;
+      const px=toPxX(clamp(p.x,-520,520)), py=toPxY(clamp(p.y,0,600));
+
+      ctx.beginPath(); ctx.arc(px,py,baseR,0,Math.PI*2);
+      ctx.fillStyle=color; ctx.fill();
+
+      const phase=((now+n*180)%period)/period, ease=1-Math.pow(1-phase,2);
+      const r1=baseR+ease*ringMax, a1=0.35*(1-ease);
+      ctx.beginPath(); ctx.arc(px,py,r1,0,Math.PI*2);
+      ctx.strokeStyle=color; ctx.globalAlpha=a1; ctx.lineWidth=2; ctx.stroke();
+
+      const phase2=((now+600+n*180)%period)/period, ease2=1-Math.pow(1-phase2,2);
+      const r2=baseR+ease2*ringMax, a2=0.25*(1-ease2);
+      ctx.beginPath(); ctx.arc(px,py,r2,0,Math.PI*2);
+      ctx.globalAlpha=a2; ctx.lineWidth=2; ctx.stroke();
+
+      ctx.globalAlpha=1;
+    }
+  }
+
+  function drawFov(range, lighter=false){
+    const pts=makeFovPoints(range);
+    ctx.beginPath();
+    ctx.moveTo(toPxX(pts[0].x),toPxY(pts[0].y));
+    for(let i=1;i<pts.length;i++) ctx.lineTo(toPxX(pts[i].x),toPxY(pts[i].y));
+    ctx.closePath();
+    ctx.globalAlpha = lighter ? 0.08 : 0.15;
+    ctx.fillStyle=cssVar('--fov');
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,cssW,cssH);
+    ctx.fillStyle=cssVar('--canvas'); ctx.fillRect(0,0,cssW,cssH);
+    drawGrid();
+    drawFov(MAX_RANGE,false);
+    if(detRange<MAX_RANGE) drawFov(clamp(detRange,0,MAX_RANGE),true);
+    for(const key of ['1','2','3','excl']){ const style=zoneStyle(key,key===currentZone); if(key!==currentZone) drawPolygon(zones[key],style); }
+    drawPolygon(zones[currentZone],zoneStyle(currentZone,true));
+    drawHandles(zones[currentZone]);
+    drawTargets();
+  }
+
+  function localMouse(evt){
+    const r=cvs.getBoundingClientRect(), sx=cssW/r.width, sy=cssH/r.height;
+    return {x:(evt.clientX-r.left)*sx,y:(evt.clientY-r.top)*sy};
+  }
+  function nearestIdx(px,py){
+    const pts=zones[currentZone]; let best=-1,dmin=14;
+    for(let i=0;i<pts.length;i++){ const dx=toPxX(pts[i].x)-px, dy=toPxY(pts[i].y)-py, d=Math.hypot(dx,dy); if(d<dmin){ dmin=d; best=i; } }
+    return best;
+  }
+  function onDown(e){
+    const {x:mx,y:my}=localMouse(e), idx=nearestIdx(mx,my), pts=zones[currentZone];
+    if(idx>=0){ dragIdx=idx; draw(); return; }
+    if(pts.length>=MAX_POINTS) return;
+    const x=Math.round(toCmX(mx)), y=Math.round(toCmY(my));
+    pts.push({x:clamp(x,X_MIN,X_MAX),y:clamp(y,Y_MIN,Y_MAX)}); draw();
+  }
+  function onMove(e){
+    if(dragIdx==null) return;
+    const {x:mx,y:my}=localMouse(e), pts=zones[currentZone];
+    pts[dragIdx]={x:Math.round(clamp(toCmX(mx),X_MIN,X_MAX)),y:Math.round(clamp(toCmY(my),Y_MIN,Y_MAX))}; draw();
+  }
+  function onUp(){ dragIdx=null; }
+
+  cvs.addEventListener('mousedown',onDown);
+  window.addEventListener('mousemove',onMove);
+  window.addEventListener('mouseup',onUp);
+
+  async function loadOne(z){
+    const id=zoneIds(z), arr=[];
+    const cnt=await apiGet('number',id.count);
+    const n=Math.max(0,Math.min(MAX_POINTS,Math.round(Number(cnt.value)??0)));
+    for(let i=1;i<=n;i++){
+      const vx=await apiGet('number',id.x(i)), vy=await apiGet('number',id.y(i));
+      arr.push({x:Math.round(clamp(Number(vx.value)||0,X_MIN,X_MAX)),y:Math.round(clamp(Number(vy.value)||0,Y_MIN,Y_MAX))});
+    }
+    zones[z]=arr;
+  }
+  async function getNumberWithFallback(primaryId,fallbackId){
+    try{ const a=await apiGet('number',primaryId); return {value:Number(a.value), id:primaryId}; }
+    catch(e){ if(!fallbackId) throw e; const b=await apiGet('number',fallbackId); return {value:Number(b.value), id:fallbackId}; }
+  }
+  async function loadDetectionRange(){
+    try{
+      setStatus('', 'Loading detection range…');
+      const r=await getNumberWithFallback('detection_range_cm','detection_range');
+      detRange=Math.round(clamp(Number(r.value)||0,0,MAX_RANGE));
+      rangeId=r.id; rangeInput.value=String(detRange);
+      setStatus('ok',`Range: ${detRange} cm`);
+    }catch(e){
+      detRange=MAX_RANGE; rangeId='detection_range_cm'; rangeInput.value=String(detRange);
+      setStatus('err','Range load failed (using 600)');
+    }
+  }
+  async function loadAll(){
+    const base=device(); if(!base){ setStatus('err','Enter a host/IP'); return; }
+    try{
+      setStatus('', 'Loading…');
+      await loadDetectionRange();
+      for(const z of ['1','2','3','excl']) await loadOne(z);
+      draw();
+      setStatus('ok','Loaded');
+    }catch(e){ setStatus('err','Load failed'); }
+  }
+
+  let saving=false;
+  async function saveCurrentZoneThrottled(){
+    if(saving) return;
+    const base=device(); if(!base){ setStatus('err','Enter a host/IP'); return; }
+    const id=zoneIds(currentZone), pts=zones[currentZone]||[], n=Math.min(MAX_POINTS,pts.length);
+    try{
+      saving=true; saveBtn.disabled=true;
+      setStatus('',`Saving ${id.label}… (pausing stream)`); stopEventStream(); await sleep(120);
+      for(let i=1;i<=MAX_POINTS;i++){
+        const p=pts[i-1]||{x:0,y:0};
+        const vx=Math.round(clamp(p.x||0,X_MIN,X_MAX)), vy=Math.round(clamp(p.y||0,Y_MIN,Y_MAX));
+        await postNumberWithRetry(id.x(i),vx); await sleep(50);
+        await postNumberWithRetry(id.y(i),vy); await sleep(50);
+      }
+      await postNumberWithRetry(id.count,n);
+      setStatus('ok',`Saved ${id.label} (${n})`);
+      await sleep(150); await loadAll();
+    }catch(e){
+      setStatus('err',`Save failed: ${e.message||e}`);
+    }finally{
+      await sleep(120); startEventStream(); saveBtn.disabled=false; saving=false;
+    }
+  }
+
+  async function setRange(){
+    const base=device(); if(!base){ setStatus('err','Enter a host/IP'); return; }
+    let val=Math.round(Number(rangeInput.value));
+    if(!Number.isFinite(val)){ setStatus('err','Invalid range'); return; }
+    val=clamp(val,0,MAX_RANGE);
+    try{
+      rangeSetBtn.disabled=true;
+      setStatus('', 'Saving range… (pausing stream)');
+      stopEventStream(); await sleep(120);
+      const id=rangeId||'detection_range_cm';
+      try{ await postNumberWithRetry(id,val); }
+      catch(e){ const alt=id==='detection_range_cm'?'detection_range':'detection_range_cm'; await postNumberWithRetry(alt,val); rangeId=alt; }
+      detRange=val; rangeInput.value=String(detRange); draw();
+      setStatus('ok',`Range set to ${detRange} cm`);
+      await sleep(120);
+    }catch(e){
+      setStatus('err','Failed to set range');
+    }finally{
+      startEventStream();
+      rangeSetBtn.disabled=false;
+    }
+  }
+
+  connectBtn.addEventListener('click',()=>{
+    const h=hostEl.value.trim(); if(!h){ setStatus('err','Enter a host/IP'); return; }
+    localStorage.setItem('zone_device_host',h);
+    setStatus('ok',`Device: ${device()}`);
+    loadAll(); startEventStream();
+  });
+  clearBtn.addEventListener('click',()=>{ zones[currentZone]=[]; draw(); setStatus('','Cleared'); });
+  zoneBtns.forEach(b=> b.addEventListener('click',()=> loadZone(b.dataset.zone)));
+  async function loadZone(z){
+    const base=device(); if(!base){ setStatus('err','Enter a host/IP'); return; }
+    currentZone=String(z);
+    zoneBtns.forEach(btn=> btn.classList.toggle('active',btn.dataset.zone===currentZone));
+    try{
+      setStatus('',`Loading ${zoneIds(currentZone).label}…`);
+      await loadOne(currentZone); draw();
+      setStatus('ok',`Loaded (${zones[currentZone].length})`);
+    }catch(e){ setStatus('err','Load failed'); }
+  }
+  saveBtn.addEventListener('click',saveCurrentZoneThrottled);
+  rangeSetBtn.addEventListener('click',setRange);
+  rangeInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') setRange(); });
+
+  function syncLayout(){
+    resizeCanvas();
+    if(!twoColumn()){ applyUiScale(1); main.style.height='auto'; }
+    else{
+      const base=1100; let scale=Math.max(0.6,Math.min(1.6,cssW/base));
+      applyUiScale(scale);
+      const h=canvasCard.getBoundingClientRect().height;
+      let guard=20;
+      while(main.scrollHeight>h && scale>0.6 && guard-->0){
+        scale=Math.max(0.6, +(scale-0.05).toFixed(2));
+        applyUiScale(scale);
+      }
+      main.style.height=Math.round(h)+'px';
+    }
+  }
+
+  let es=null;
+  const idMap={
+    'sensor-target_1_x':{n:1,k:'x'},'sensor-target_1_y':{n:1,k:'y'},
+    'sensor-target_2_x':{n:2,k:'x'},'sensor-target_2_y':{n:2,k:'y'},
+    'sensor-target_3_x':{n:3,k:'x'},'sensor-target_3_y':{n:3,k:'y'},
+  };
+  function startEventStream(){
+    stopEventStream();
+    const base = device(); if(!base){ setStatus('err','No device'); return; }
+    es = new EventSource(`${base}/events`, { withCredentials:false });
+    es.onopen  = ()=>{ setStatus('ok','SSE live'); };
+    es.onerror = ()=>{ setStatus('err','SSE disconnected'); };
+    es.addEventListener('state', (ev)=>{ try{ handleEvent(JSON.parse(ev.data)); }catch(e){} });
+    es.addEventListener('ping',  ()=>{});
+    es.onmessage = (ev)=>{ try{ handleEvent(JSON.parse(ev.data)); }catch(e){} };
+  }
+  function stopEventStream(){ if(es){ try{ es.close(); }catch{} es=null; } }
+  function handleEvent(msg){
+    const {id, value} = msg||{};
+    const m = idMap[id];
+    if(!m) return;
+    const num = (typeof value === 'number') ? value : Number(value);
+    if(Number.isNaN(num)) return;
+    const p = livePos[m.n];
+    p[m.k] = num;
+  }
+
+  function animate(){
+    syncLayout();
+    draw();
+    requestAnimationFrame(animate);
+  }
+
+  const ro=new ResizeObserver(()=>{ syncLayout(); });
+  ro.observe(canvasCard);
+  window.addEventListener('resize',syncLayout);
+  window.matchMedia('(max-width: 1150px)').addEventListener('change',syncLayout);
+  window.matchMedia('(min-width: 1150px)').addEventListener('change',syncLayout);
+
+  animate();
+  zoneBtns[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

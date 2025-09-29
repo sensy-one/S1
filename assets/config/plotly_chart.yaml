@@ -1,0 +1,445 @@
+type: custom:plotly-graph
+title: null
+refresh_interval: 0.05
+config:
+  staticPlot: true
+  displayModeBar: false
+  responsive: true
+layout:
+  height: 300
+  margin:
+    l: 0
+    r: 0
+    t: 0
+    b: 5
+  showlegend: false
+  hovermode: false
+  xaxis:
+    title: null
+    dtick: 100
+    type: number
+    fixedrange: false
+    showgrid: false
+    gridcolor: "#1e2431"
+    showticklabels: false
+    zeroline: false
+    showline: false
+    range:
+      - -580
+      - 580
+    constrain: domain
+  yaxis:
+    title: null
+    dtick: 100
+    type: number
+    fixedrange: false
+    showgrid: false
+    gridcolor: "#1e2431"
+    showticklabels: false
+    zeroline: false
+    showline: false
+    range:
+      - 600
+      - 0
+    scaleanchor: x
+    scaleratio: 1
+entities:
+  - entity: ""
+    name: Coverage
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      smoothing: 1
+      width: 0
+      color: rgba(0,0,0,0)
+    fill: toself
+    fillcolor: rgba(95,124,255,0.15)
+    x: |
+      $ex (function(){
+        const R = 600, rad=Math.PI/180, half=60;
+        const pts=[];
+        const sx = R*Math.sin(half*rad), sy = R*Math.cos(half*rad);
+        for(let t=0; t<=1.0001; t+=0.02) pts.push(sx*t);
+        for(let a=half; a>=-half-1e-6; a-=0.5) pts.push(R*Math.sin(a*rad));
+        const ex = R*Math.sin(-half*rad);
+        for(let t=1; t>=-1e-6; t-=0.02) pts.push(ex*t);
+        return pts;
+      })()
+    "y": |
+      $ex (function(){
+        const R = 600, rad=Math.PI/180, half=60;
+        const pts=[];
+        const sx = R*Math.sin(half*rad), sy = R*Math.cos(half*rad);
+        for(let t=0; t<=1.0001; t+=0.02) pts.push(sy*t);
+        for(let a=half; a>=-half-1e-6; a-=0.5) pts.push(R*Math.cos(a*rad));
+        const ey = R*Math.cos(-half*rad);
+        for(let t=1; t>=-1e-6; t-=0.02) pts.push(ey*t);
+        return pts;
+      })()
+  - entity: ""
+    name: Coverage (Range)
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 0
+      color: rgba(0,0,0,0)
+    fill: toself
+    fillcolor: rgba(95,124,255,0.08)
+    x: |
+      $ex (function(){
+        function getRange(){
+          const ids=[
+            "number.replace_me_detection_range"
+          ];
+          for(const id of ids){
+            const s=hass.states[id]; if(!s) continue;
+            const raw=String(s.state);
+            if(raw==="unknown"||raw==="unavailable") continue;
+            const v=parseFloat(raw.replace(/[^0-9.\-]+/g,""));
+            if(isFinite(v)) return v;
+          }
+          return NaN;
+        }
+        const R=getRange(); if(!(R>0 && R<600)) return [null];
+        const rad=Math.PI/180, half=60, pts=[];
+        const sx=R*Math.sin(half*rad);
+        for(let t=0; t<=1.0001; t+=0.001) pts.push(sx*t);
+        for(let a=half; a>=-half-1e-6; a-=0.001) pts.push(R*Math.sin(a*rad));
+        const ex=R*Math.sin(-half*rad);
+        for(let t=1; t>=-1e-6; t-=0.001) pts.push(ex*t);
+        return pts;
+      })()
+    "y": |
+      $ex (function(){
+        function getRange(){
+          const ids=[
+            "sensor.replace_me_detection_range",
+            "number.replace_me_detection_range",
+            "number.replace_me_detection_range_cm"
+          ];
+          for(const id of ids){
+            const s=hass.states[id]; if(!s) continue;
+            const raw=String(s.state);
+            if(raw==="unknown"||"unavailable"===raw) continue;
+            const v=parseFloat(raw.replace(/[^0-9.\-]+/g,""));
+            if(isFinite(v)) return v;
+          }
+          return NaN;
+        }
+        const R=getRange(); if(!(R>0 && R<600)) return [null];
+        const rad=Math.PI/180, half=60, pts=[];
+        const sy=R*Math.cos(half*rad);
+        for(let t=0; t<=1.0001; t+=0.001) pts.push(sy*t);
+        for(let a=half; a>=-half-1e-6; a-=0.001) pts.push(R*Math.cos(a*rad));
+        const ey=R*Math.cos(-half*rad);
+        for(let t=1; t>=-1e-6; t-=0.001) pts.push(ey*t);
+        return pts;
+      })()
+  - entity: ""
+    name: Target 1 Core
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 0
+      color: rgba(34,197,94,1)
+    fill: toself
+    fillcolor: rgba(34,197,94,0.95)
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        return ys;
+      })()
+  - entity: ""
+    name: Target 1 Ring
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 2
+      color: rgba(34,197,94,0.32)
+      shape: linear
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50;
+        const frame=Math.floor(Date.now()/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, xs=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
+        xs.push(xs[0]);  // hard close
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50;
+        const frame=Math.floor(Date.now()/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, ys=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
+        ys.push(ys[0]);  // hard close
+        return ys;
+      })()
+  - entity: ""
+    name: Target 2 Core
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 0
+      color: rgba(34,197,94,1)
+    fill: toself
+    fillcolor: rgba(34,197,94,0.95)
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        return ys;
+      })()
+  - entity: ""
+    name: Target 2 Ring
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 2
+      color: rgba(34,197,94,0.32)
+      shape: linear
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50, offsetMs=260;
+        const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, xs=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
+        xs.push(xs[0]);  // hard close
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50, offsetMs=260;
+        const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, ys=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
+        ys.push(ys[0]);  // hard close
+        return ys;
+      })()
+  - entity: ""
+    name: Target 3 Core
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 0
+      color: rgba(34,197,94,1)
+    fill: toself
+    fillcolor: rgba(34,197,94,0.95)
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
+        if(x===0 && y===0) return [null];
+        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        return ys;
+      })()
+  - entity: ""
+    name: Target 3 Ring
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      width: 2
+      color: rgba(34,197,94,0.32)
+      shape: linear
+    x: |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50, offsetMs=520;
+        const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, xs=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
+        xs.push(xs[0]);  // hard close
+        return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
+        const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
+        if(x===0 && y===0) return [null];
+
+        const period=800, frameMs=50, offsetMs=520;
+        const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
+        const periodFrames=Math.max(1, Math.round(period/frameMs));
+        const phase=(frame%periodFrames)/periodFrames;
+        const ease=1-Math.pow(1-phase,2);
+        const r=8 + ease*16;
+
+        const n=180, ys=[], a2pi=2*Math.PI;
+        for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
+        ys.push(ys[0]);  // hard close
+        return ys;
+      })()
+  - entity: ""
+    name: Zone 1
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      color: "#69b1ff"
+      width: 2
+    fill: toself
+    fillcolor: rgba(105,177,255,0.16)
+    x: |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_1_points_count"].state)||0;
+        const xs=[]; for(let i=1;i<=n;i++) xs.push(parseFloat(hass.states[`number.replace_me_zone_1_p${i}_x`].state)||0);
+        if(n>=3) xs.push(xs[0]); return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_1_points_count"].state)||0;
+        const ys=[]; for(let i=1;i<=n;i++) ys.push(parseFloat(hass.states[`number.replace_me_zone_1_p${i}_y`].state)||0);
+        if(n>=3) ys.push(ys[0]); return ys;
+      })()
+  - entity: ""
+    name: Zone 2
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      color: "#69b1ff"
+      width: 2
+    fill: toself
+    fillcolor: rgba(105,177,255,0.16)
+    x: |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_2_points_count"].state)||0;
+        const xs=[]; for(let i=1;i<=n;i++) xs.push(parseFloat(hass.states[`number.replace_me_zone_2_p${i}_x`].state)||0);
+        if(n>=3) xs.push(xs[0]); return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_2_points_count"].state)||0;
+        const ys=[]; for(let i=1;i<=n;i++) ys.push(parseFloat(hass.states[`number.replace_me_zone_2_p${i}_y`].state)||0);
+        if(n>=3) ys.push(ys[0]); return ys;
+      })()
+  - entity: ""
+    name: Zone 3
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      color: "#69b1ff"
+      width: 2
+    fill: toself
+    fillcolor: rgba(105,177,255,0.16)
+    x: |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_3_points_count"].state)||0;
+        const xs=[]; for(let i=1;i<=n;i++) xs.push(parseFloat(hass.states[`number.replace_me_zone_3_p${i}_x`].state)||0);
+        if(n>=3) xs.push(xs[0]); return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_zone_3_points_count"].state)||0;
+        const ys=[]; for(let i=1;i<=n;i++) ys.push(parseFloat(hass.states[`number.replace_me_zone_3_p${i}_y`].state)||0);
+        if(n>=3) ys.push(ys[0]); return ys;
+      })()
+  - entity: ""
+    name: Exclusion Zone
+    type: scatter
+    mode: lines
+    showlegend: false
+    line:
+      shape: linear
+      color: rgb(255,107,107)
+      width: 2
+    fill: toself
+    fillcolor: rgba(255,107,107,0.16)
+    x: |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_exclusion_zone_points_count"].state)||0;
+        const xs=[]; for(let i=1;i<=n;i++) xs.push(parseFloat(hass.states[`number.replace_me_exclusion_zone_p${i}_x`].state)||0);
+        if(n>=3) xs.push(xs[0]); return xs;
+      })()
+    "y": |
+      $ex (function(){
+        const n=parseInt(hass.states["number.replace_me_exclusion_zone_points_count"].state)||0;
+        const ys=[]; for(let i=1;i<=n;i++) ys.push(parseFloat(hass.states[`number.replace_me_exclusion_zone_p${i}_y`].state)||0);
+        if(n>=3) ys.push(ys[0]); return ys;
+      })()

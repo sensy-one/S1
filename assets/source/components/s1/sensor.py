@@ -4,18 +4,17 @@ from esphome.const import CONF_ID, CONF_UART_ID
 from esphome.components import sensor, uart, number, switch as _switch, text_sensor
 
 DEPENDENCIES = ["uart"]
-AUTO_LOAD = ["sensor", "text_sensor"]
+AUTO_LOAD = ["sensor", "text_sensor", "number"]
 
 ns = cg.esphome_ns.namespace("s1")
 LD2450 = ns.class_("LD2450", cg.Component, uart.UARTDevice)
 
 CONF_DETECTION_RANGE = "detection_range"
 CONF_FLIP_Y = "flip_y"
-CONF_EXC_X_BEGIN = "exclusion_x_begin"
-CONF_EXC_X_END = "exclusion_x_end"
-CONF_EXC_Y_BEGIN = "exclusion_y_begin"
-CONF_EXC_Y_END = "exclusion_y_end"
 CONF_TRACKING_MODE = "tracking_mode"
+CONF_BLUETOOTH_STATE = "bluetooth_state"
+CONF_EXCLUSION_ZONE_POINTS_COUNT = "exclusion_zone_points_count"
+EXCLUSION_ZONE_KEYS = [f"exclusion_zone_p{i}_{axis}" for i in range(1, 9) for axis in "xy"]
 
 SENSOR_KEYS = [
     "target1_x", "target1_y", "target1_angle", "target1_speed", "target1_distance",
@@ -32,12 +31,11 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Required(CONF_DETECTION_RANGE): cv.use_id(number.Number),
     cv.Required(CONF_FLIP_Y): cv.use_id(_switch.Switch),
 
-    cv.Required(CONF_EXC_X_BEGIN): cv.use_id(number.Number),
-    cv.Required(CONF_EXC_X_END): cv.use_id(number.Number),
-    cv.Required(CONF_EXC_Y_BEGIN): cv.use_id(number.Number),
-    cv.Required(CONF_EXC_Y_END): cv.use_id(number.Number),
-
     cv.Required(CONF_TRACKING_MODE): text_sensor.text_sensor_schema(),
+    cv.Optional(CONF_BLUETOOTH_STATE): text_sensor.text_sensor_schema(),
+
+    cv.Optional(CONF_EXCLUSION_ZONE_POINTS_COUNT): cv.use_id(number.Number),
+    **{cv.Optional(key): cv.use_id(number.Number) for key in EXCLUSION_ZONE_KEYS},
 
 }).extend(cv.COMPONENT_SCHEMA).extend(uart.UART_DEVICE_SCHEMA)
 
@@ -55,14 +53,19 @@ async def to_code(config):
     fy = await cg.get_variable(config[CONF_FLIP_Y])
     cg.add(var.set_flip_y(fy))
 
-    xb = await cg.get_variable(config[CONF_EXC_X_BEGIN])
-    xe = await cg.get_variable(config[CONF_EXC_X_END])
-    yb = await cg.get_variable(config[CONF_EXC_Y_BEGIN])
-    ye = await cg.get_variable(config[CONF_EXC_Y_END])
-    cg.add(var.set_exclusion_x_begin(xb))
-    cg.add(var.set_exclusion_x_end(xe))
-    cg.add(var.set_exclusion_y_begin(yb))
-    cg.add(var.set_exclusion_y_end(ye))
-
     tracking = await text_sensor.new_text_sensor(config[CONF_TRACKING_MODE])
     cg.add(var.set_tracking_mode_sensor(tracking))
+
+    if CONF_BLUETOOTH_STATE in config:
+        bt_state = await text_sensor.new_text_sensor(config[CONF_BLUETOOTH_STATE])
+        cg.add(var.set_bluetooth_state_sensor(bt_state))
+
+    if CONF_EXCLUSION_ZONE_POINTS_COUNT in config:
+        count_var = await cg.get_variable(config[CONF_EXCLUSION_ZONE_POINTS_COUNT])
+        cg.add(var.set_exclusion_zone_points_count(count_var))
+
+    for key in EXCLUSION_ZONE_KEYS:
+        if key in config:
+            point_var = await cg.get_variable(config[key])
+            setter_name = "set_" + key
+            cg.add(getattr(var, setter_name)(point_var))

@@ -64,28 +64,25 @@ Add an interactive map to your Home Assistant dashboard. The Plotly Graph Card a
 
 ## 📍 Get in the Zone
 
-Set up custom zones right from your Home Assistant dashboard. Our sensor provides op to 10 detection zones and 1 exclusion zone. Each zone reports a presence sensor, a movement sensor, and a target count sensor. Giving you all the data you need to trigger precise, zone-based automations.
+The S1 now supports up to 3 detection zones and 1 exclusion zone — all configurable as custom polygons with up to 8 points each.
+Instead of adjusting multiple number entities, you can now set zones visually using the Zone Editor tool:
 
-**Set Horizontal Boundaries**  
-- **X Begin**: Enter the leftmost coordinate of your zone.  
-- **X End**: Enter the rightmost coordinate of your zone.
+**How to use the Zone Editor**
+- Download the [zone_editor.html](https://github.com/sensy-one/S1/tree/main/assets/config) file.
+- Open the Zone Editor on a desktop computer using any modern browser (Chrome, Edge, Firefox, Safari).
+- In the Zone Editor, enter the IP address of your S1 Pro (the same one you see in Home Assistant).
+- Select which zone you want to configure (Zone 1, Zone 2, Zone 3, or Exclusion).
+- Click directly on the radar canvas to place up to 8 points and draw the shape of your zone.
+- Save your configuration — it will be applied immediately to your device.
 
-**Set Vertical Boundaries**  
-- **Y Begin**: Enter the top coordinate of your zone.  
-- **Y End**: Enter the bottom coordinate of your zone.
-
-**Example Configuration**  
-- **X Begin**: -125
-- **X End**: 125
-- **Y Begin**: 175  
-- **Y End**: 425  
+> Note: Make sure your desktop is connected to the same network as your Home Assistant / Sensor.
 
 ## 🔄 Firmware on the Fly
 
 Keep your sensor up to date with regular OTA updates. We continuously refine performance and add new functionalities to keep your sensor reliable and current.
 
 **Install OTA Updates**  
-- Download the latest ota firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/base/ota).
+- Download the latest OTA firmware from the [releases](https://github.com/sensy-one/S1/releases).
 - Go to **Devices and Services** and select **ESPHome**. Choose the sensor you want to update.  
 - Under **Device Info**, click **Visit** to open the sensor’s web server.
 - Scroll down to the **OTA Update**, choose the downloaded firmware file, and click **Update**.  
@@ -113,7 +110,7 @@ uart:
 Even the most cutting-edge tech can have its off moments. If your sensor isn’t performing exactly as expected, don’t worry. A quick factory reset might be all you need for a fresh start.
 
 **Install Factory Firmware**  
-- Download the latest factory firmware from our [Git repository](https://github.com/sensy-one/mmwave-sensor/tree/main/assets/firmware/base/factory).  
+- Download the latest factory firmware from the [releases](https://github.com/sensy-one/S1/releases). 
 - Plug the sensor into your PC via USB-C.  
 - Open the [Official ESPHome Web Wizard](https://web.esphome.io/?dashboard_wizard).  
 - Click **Connect** and select the appropriate COM port for your sensor.  
