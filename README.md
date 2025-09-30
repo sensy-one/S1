@@ -80,6 +80,7 @@ Instead of adjusting multiple number entities, you can now set zones visually us
 - Save your configuration — it will be applied immediately to your device.
 
 > Note: Make sure your desktop is connected to the same network as your Home Assistant / Sensor.
+
 > Tip: If you run into trouble, you can always have a look at the [YouTube video](https://www.youtube.com/watch?v=raLACrPG8EM) for guidance.
 
 ## 🔄 Firmware on the Fly
