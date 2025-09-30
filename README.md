@@ -12,13 +12,15 @@ After four months of prototyping, fine-tuning the firmware, and testing, we have
 
 The sensor features built-in auto-discovery via the BLE Improv protocol, so it’s instantly recognized by Home Assistant as soon as it’s powered on. No BLE? No problem! It automatically switches to AP mode for an effortless, rock-solid integration.
 
+> Note: BLE Improv is temporarily disabled due to performance issues.
+
 **Precision Motion Tracking**  
 
 Track up to three targets simultaneously in real time. The Hi-Link LD2450 accurately detects X and Y coordinates, movement speed, and more, with a 6-meter range, 120° field of view, and a 35° pitch angle. Whether detecting subtle movements or following dynamic motion, you can count on precise, reliable performance.
 
 **Customizable Detection Zones**  
 
-Our sensor offers flexible monitoring with up to 10 customizable detection zones and one exclusion zone. Each detection zone includes three dedicated sensors that measure movement, presence, and target count, providing detailed insights into activity. Adjustable motion thresholds and timeouts allow you to fine-tune the sensor’s sensitivity and response, ensuring optimal performance in any environment.
+Our sensor offers flexible monitoring with up to 3 customizable detection zones and one exclusion zone. Each detection zone includes three dedicated sensors that measure movement, presence, and target count, providing detailed insights into activity. Adjustable motion thresholds and timeouts allow you to fine-tune the sensor’s sensitivity and response, ensuring optimal performance in any environment.
 
 **Power-Packed Performance**  
 
@@ -35,6 +37,8 @@ Power your sensor with any 5V supply via its USB-C port. It only needs a little 
 **For Home Assistant Systems with BLE:**  
 - The sensor will appear under **Devices and Services** as **Discovered**.
 - Click **Add** and enter your Wi-Fi credentials to connect it to your network.
+
+> Note: BLE Improv is temporarily disabled due to performance issues.
 
 **For Home Assistant Systems without BLE:**  
 - The sensor will create its own access point named **I am Sensy!**.
@@ -76,6 +80,7 @@ Instead of adjusting multiple number entities, you can now set zones visually us
 - Save your configuration — it will be applied immediately to your device.
 
 > Note: Make sure your desktop is connected to the same network as your Home Assistant / Sensor.
+> Tip: If you run into trouble, you can always have a look at the [YouTube video](https://www.youtube.com/watch?v=raLACrPG8EM) for guidance.
 
 ## 🔄 Firmware on the Fly
 
