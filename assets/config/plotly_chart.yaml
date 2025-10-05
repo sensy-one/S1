@@ -1,6 +1,6 @@
 type: custom:plotly-graph
 title: null
-refresh_interval: 0.05
+refresh_interval: 0.1
 config:
   staticPlot: true
   displayModeBar: false
@@ -18,7 +18,7 @@ layout:
     title: null
     dtick: 100
     type: number
-    fixedrange: false
+    fixedrange: true
     showgrid: false
     gridcolor: "#1e2431"
     showticklabels: false
@@ -32,7 +32,7 @@ layout:
     title: null
     dtick: 100
     type: number
-    fixedrange: false
+    fixedrange: true
     showgrid: false
     gridcolor: "#1e2431"
     showticklabels: false
@@ -47,12 +47,14 @@ entities:
   - entity: ""
     name: Coverage
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       shape: linear
       smoothing: 1
       width: 0
+      simplify: true
       color: rgba(0,0,0,0)
     fill: toself
     fillcolor: rgba(95,124,255,0.15)
@@ -61,10 +63,10 @@ entities:
         const R = 600, rad=Math.PI/180, half=60;
         const pts=[];
         const sx = R*Math.sin(half*rad), sy = R*Math.cos(half*rad);
-        for(let t=0; t<=1.0001; t+=0.02) pts.push(sx*t);
-        for(let a=half; a>=-half-1e-6; a-=0.5) pts.push(R*Math.sin(a*rad));
+        for(let t=0; t<=1.0001; t+=0.1) pts.push(sx*t);
+        for(let a=half; a>=-half-1e-6; a-=2) pts.push(R*Math.sin(a*rad));
         const ex = R*Math.sin(-half*rad);
-        for(let t=1; t>=-1e-6; t-=0.02) pts.push(ex*t);
+        for(let t=1; t>=-1e-6; t-=0.1) pts.push(ex*t);
         return pts;
       })()
     "y": |
@@ -72,19 +74,21 @@ entities:
         const R = 600, rad=Math.PI/180, half=60;
         const pts=[];
         const sx = R*Math.sin(half*rad), sy = R*Math.cos(half*rad);
-        for(let t=0; t<=1.0001; t+=0.02) pts.push(sy*t);
-        for(let a=half; a>=-half-1e-6; a-=0.5) pts.push(R*Math.cos(a*rad));
+        for(let t=0; t<=1.0001; t+=0.1) pts.push(sy*t);
+        for(let a=half; a>=-half-1e-6; a-=2) pts.push(R*Math.cos(a*rad));
         const ey = R*Math.cos(-half*rad);
-        for(let t=1; t>=-1e-6; t-=0.02) pts.push(ey*t);
+        for(let t=1; t>=-1e-6; t-=0.1) pts.push(ey*t);
         return pts;
       })()
   - entity: ""
     name: Coverage (Range)
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       width: 0
+      simplify: true
       color: rgba(0,0,0,0)
     fill: toself
     fillcolor: rgba(95,124,255,0.08)
@@ -92,7 +96,9 @@ entities:
       $ex (function(){
         function getRange(){
           const ids=[
-            "number.replace_me_detection_range"
+            "sensor.replace_me_detection_range",
+            "number.replace_me_detection_range",
+            "number.replace_me_detection_range_cm"
           ];
           for(const id of ids){
             const s=hass.states[id]; if(!s) continue;
@@ -106,10 +112,10 @@ entities:
         const R=getRange(); if(!(R>0 && R<600)) return [null];
         const rad=Math.PI/180, half=60, pts=[];
         const sx=R*Math.sin(half*rad);
-        for(let t=0; t<=1.0001; t+=0.001) pts.push(sx*t);
-        for(let a=half; a>=-half-1e-6; a-=0.001) pts.push(R*Math.sin(a*rad));
+        for(let t=0; t<=1.0001; t+=0.005) pts.push(sx*t);
+        for(let a=half; a>=-half-1e-6; a-=0.25) pts.push(R*Math.sin(a*rad));
         const ex=R*Math.sin(-half*rad);
-        for(let t=1; t>=-1e-6; t-=0.001) pts.push(ex*t);
+        for(let t=1; t>=-1e-6; t-=0.005) pts.push(ex*t);
         return pts;
       })()
     "y": |
@@ -123,7 +129,7 @@ entities:
           for(const id of ids){
             const s=hass.states[id]; if(!s) continue;
             const raw=String(s.state);
-            if(raw==="unknown"||"unavailable"===raw) continue;
+            if(raw==="unknown"||raw==="unavailable") continue;
             const v=parseFloat(raw.replace(/[^0-9.\-]+/g,""));
             if(isFinite(v)) return v;
           }
@@ -132,19 +138,21 @@ entities:
         const R=getRange(); if(!(R>0 && R<600)) return [null];
         const rad=Math.PI/180, half=60, pts=[];
         const sy=R*Math.cos(half*rad);
-        for(let t=0; t<=1.0001; t+=0.001) pts.push(sy*t);
-        for(let a=half; a>=-half-1e-6; a-=0.001) pts.push(R*Math.cos(a*rad));
+        for(let t=0; t<=1.0001; t+=0.005) pts.push(sy*t);
+        for(let a=half; a>=-half-1e-6; a-=0.25) pts.push(R*Math.cos(a*rad));
         const ey=R*Math.cos(-half*rad);
-        for(let t=1; t>=-1e-6; t-=0.001) pts.push(ey*t);
+        for(let t=1; t>=-1e-6; t-=0.005) pts.push(ey*t);
         return pts;
       })()
   - entity: ""
     name: Target 1 Core
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       width: 0
+      simplify: true
       color: rgba(34,197,94,1)
     fill: toself
     fillcolor: rgba(34,197,94,0.95)
@@ -153,7 +161,7 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        const n=36, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
         return xs;
       })()
     "y": |
@@ -161,34 +169,34 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        const n=36, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
         return ys;
       })()
   - entity: ""
     name: Target 1 Ring
     type: scatter
     mode: lines
+    hoverinfo: skip
     showlegend: false
     line:
       width: 2
       color: rgba(34,197,94,0.32)
       shape: linear
+      simplify: true
     x: |
       $ex (function(){
         const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50;
+        const period=1200, frameMs=250;
         const frame=Math.floor(Date.now()/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, xs=[], a2pi=2*Math.PI;
+        const n=60, xs=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
-        xs.push(xs[0]);  // hard close
+        xs.push(xs[0]);
         return xs;
       })()
     "y": |
@@ -196,26 +204,26 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_1_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_1_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50;
+        const period=1200, frameMs=250;
         const frame=Math.floor(Date.now()/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, ys=[], a2pi=2*Math.PI;
+        const n=60, ys=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
-        ys.push(ys[0]);  // hard close
+        ys.push(ys[0]);
         return ys;
       })()
   - entity: ""
     name: Target 2 Core
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       width: 0
+      simplify: true
       color: rgba(34,197,94,1)
     fill: toself
     fillcolor: rgba(34,197,94,0.95)
@@ -224,7 +232,7 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        const n=36, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
         return xs;
       })()
     "y": |
@@ -232,34 +240,34 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        const n=36, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
         return ys;
       })()
   - entity: ""
     name: Target 2 Ring
     type: scatter
     mode: lines
+    hoverinfo: skip
     showlegend: false
     line:
       width: 2
       color: rgba(34,197,94,0.32)
       shape: linear
+      simplify: true
     x: |
       $ex (function(){
         const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50, offsetMs=260;
+        const period=1200, frameMs=250, offsetMs=260;
         const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, xs=[], a2pi=2*Math.PI;
+        const n=60, xs=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
-        xs.push(xs[0]);  // hard close
+        xs.push(xs[0]);
         return xs;
       })()
     "y": |
@@ -267,26 +275,26 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_2_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_2_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50, offsetMs=260;
+        const period=1200, frameMs=250, offsetMs=260;
         const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, ys=[], a2pi=2*Math.PI;
+        const n=60, ys=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
-        ys.push(ys[0]);  // hard close
+        ys.push(ys[0]);
         return ys;
       })()
   - entity: ""
     name: Target 3 Core
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       width: 0
+      simplify: true
       color: rgba(34,197,94,1)
     fill: toself
     fillcolor: rgba(34,197,94,0.95)
@@ -295,7 +303,7 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
+        const n=36, r=8, xs=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; xs.push(x+r*Math.cos(a)); }
         return xs;
       })()
     "y": |
@@ -303,34 +311,34 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
         if(x===0 && y===0) return [null];
-        const n=72, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
+        const n=36, r=8, ys=[]; for(let i=0;i<=n;i++){ const a=2*Math.PI*i/n; ys.push(y+r*Math.sin(a)); }
         return ys;
       })()
   - entity: ""
     name: Target 3 Ring
     type: scatter
     mode: lines
+    hoverinfo: skip
     showlegend: false
     line:
       width: 2
       color: rgba(34,197,94,0.32)
       shape: linear
+      simplify: true
     x: |
       $ex (function(){
         const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50, offsetMs=520;
+        const period=1200, frameMs=250, offsetMs=520;
         const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, xs=[], a2pi=2*Math.PI;
+        const n=60, xs=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; xs.push(x+r*Math.cos(a)); }
-        xs.push(xs[0]);  // hard close
+        xs.push(xs[0]);
         return xs;
       })()
     "y": |
@@ -338,28 +346,28 @@ entities:
         const x=parseInt(hass.states["sensor.replace_me_target_3_x"].state);
         const y=parseInt(hass.states["sensor.replace_me_target_3_y"].state);
         if(x===0 && y===0) return [null];
-
-        const period=800, frameMs=50, offsetMs=520;
+        const period=1200, frameMs=250, offsetMs=520;
         const frame=Math.floor(Date.now()/frameMs) + Math.round(offsetMs/frameMs);
         const periodFrames=Math.max(1, Math.round(period/frameMs));
         const phase=(frame%periodFrames)/periodFrames;
         const ease=1-Math.pow(1-phase,2);
         const r=8 + ease*16;
-
-        const n=180, ys=[], a2pi=2*Math.PI;
+        const n=60, ys=[], a2pi=2*Math.PI;
         for(let i=0;i<n;i++){ const a=a2pi*i/n; ys.push(y+r*Math.sin(a)); }
-        ys.push(ys[0]);  // hard close
+        ys.push(ys[0]);
         return ys;
       })()
   - entity: ""
     name: Zone 1
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       shape: linear
       color: "#69b1ff"
-      width: 2
+      width: 0
+      simplify: true
     fill: toself
     fillcolor: rgba(105,177,255,0.16)
     x: |
@@ -377,12 +385,14 @@ entities:
   - entity: ""
     name: Zone 2
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       shape: linear
       color: "#69b1ff"
-      width: 2
+      width: 0
+      simplify: true
     fill: toself
     fillcolor: rgba(105,177,255,0.16)
     x: |
@@ -400,12 +410,14 @@ entities:
   - entity: ""
     name: Zone 3
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       shape: linear
       color: "#69b1ff"
-      width: 2
+      width: 0
+      simplify: true
     fill: toself
     fillcolor: rgba(105,177,255,0.16)
     x: |
@@ -423,12 +435,14 @@ entities:
   - entity: ""
     name: Exclusion Zone
     type: scatter
-    mode: lines
+    mode: none
+    hoverinfo: skip
     showlegend: false
     line:
       shape: linear
       color: rgb(255,107,107)
-      width: 2
+      width: 0
+      simplify: true
     fill: toself
     fillcolor: rgba(255,107,107,0.16)
     x: |
