@@ -74,7 +74,7 @@ Instead of adjusting multiple number entities, you can now set zones visually us
 **How to use the Zone Editor**
 - Download the [zone_editor.html](https://github.com/sensy-one/S1/tree/main/assets/config) file.
 - Open the Zone Editor on a desktop computer using any modern browser (Chrome, Edge, Firefox, Safari).
-- In the Zone Editor, enter the IP address of your S1 Pro (the same one you see in Home Assistant).
+- In the Zone Editor, enter the IP address of your S1 sensor (the same one you see in Home Assistant).
 - Select which zone you want to configure (Zone 1, Zone 2, Zone 3, or Exclusion).
 - Click directly on the radar canvas to place up to 8 points and draw the shape of your zone.
 - Save your configuration — it will be applied immediately to your device.
