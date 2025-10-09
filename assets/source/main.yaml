@@ -4,7 +4,7 @@ esphome:
   name_add_mac_suffix: True
   project: 
     name: Sensy-One.S1 mmWave Sensor
-    version: v1.2.5
+    version: v1.2.6
 
 external_components:
   - source:
@@ -226,6 +226,11 @@ sensor:
     exclusion_zone_p8_x: exclusion_zone_p8_x
     exclusion_zone_p8_y: exclusion_zone_p8_y
 
+    gate_radius_cm: gate_radius_cm
+    stationary_speed_thresh: stationary_speed_thresh
+    stationary_time_s: stationary_time_s
+    dropout_hold_m: dropout_hold_m
+
     tracking_mode:
       name: "RADAR | Tracking Mode"
       id: radar_tracking_mode
@@ -237,6 +242,21 @@ sensor:
      id: radar_bluetooth_state
      entity_category: diagnostic
      icon: mdi:bluetooth
+
+    target1_state:
+      name: "Target 1 State"
+      id: radar_target1_state
+      icon: mdi:account-check
+
+    target2_state:
+      name: "Target 2 State"
+      id: radar_target2_state
+      icon: mdi:account-check
+
+    target3_state:
+      name: "Target 3 State"
+      id: radar_target3_state
+      icon: mdi:account-check
 
   - platform: template
     name: "All Targets Count"
@@ -1348,6 +1368,58 @@ number:
     max_value: 3600
     step: 1
     initial_value: 0
+    optimistic: true
+    restore_value: true
+    mode: box
+
+  - platform: template
+    id: gate_radius_cm
+    name: "RADAR Gate Radius"
+    icon: mdi:crosshairs-gps
+    unit_of_measurement: "cm"
+    min_value: 5
+    max_value: 300
+    step: 1
+    initial_value: 120
+    optimistic: true
+    restore_value: true
+    mode: box
+
+  - platform: template
+    id: stationary_speed_thresh
+    name: "RADAR Stationary Speed Threshold"
+    icon: mdi:speedometer-slow
+    unit_of_measurement: "cm/s"
+    min_value: 0
+    max_value: 100
+    step: 1
+    initial_value: 45
+    optimistic: true
+    restore_value: true
+    mode: box
+
+  - platform: template
+    id: stationary_time_s
+    name: "RADAR Stationary Time"
+    icon: mdi:timer-sand
+    unit_of_measurement: "s"
+    min_value: 0
+    max_value: 30
+    step: 1
+    initial_value: 5
+    optimistic: true
+    restore_value: true
+    mode: box
+
+  - platform: template
+    id: dropout_hold_m
+    name: "RADAR Dropout Hold Time"
+    icon: mdi:timer-lock-outline
+    unit_of_measurement: "min"
+    min_value: 0
+    max_value: 60
+    step: 1
+    initial_value: 15
     optimistic: true
     restore_value: true
     mode: box
