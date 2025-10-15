@@ -71,6 +71,9 @@ Add an interactive map to your Home Assistant dashboard. The Plotly Graph Card a
 The S1 now supports up to 3 detection zones and 1 exclusion zone — all configurable as custom polygons with up to 8 points each.
 Instead of adjusting multiple number entities, you can now set zones visually using the Zone Editor tool:
 
+> Note: A new and improved Zone Editor Add-on for Home Assistant is now available!
+You can find it [here](https://github.com/sensy-one/home-assistant-addons) and follow the installation guide. The steps below describe the manual (legacy) method, which you can still use if you prefer.
+
 **How to use the Zone Editor**
 - Download the [zone_editor.html](https://github.com/sensy-one/S1/tree/main/assets/config) file.
 - Open the Zone Editor on a desktop computer using any modern browser (Chrome, Edge, Firefox, Safari).
