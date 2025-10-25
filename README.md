@@ -97,6 +97,8 @@ Keep your sensor up to date with regular OTA updates. We continuously refine per
 - Scroll down to the **OTA Update**, choose the downloaded firmware file, and click **Update**.  
   *(If the update page times out, simply refresh the page.)*
 
+> Note: If you’re upgrading from firmware version v1.0.6 to v1.2.0 or higher, you’ll need a one-time factory firmware installation because we’ve switched frameworks. After that, OTA updates will work again as usual.  
+
 ## ⚙️ Build Your Own Solution
 
 For advanced users looking to create custom firmware, simply integrate the settings below into your yaml.
