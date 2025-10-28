@@ -22,6 +22,7 @@ CONF_STATIONARY_SPEED_THRESH = "stationary_speed_thresh"
 CONF_STATIONARY_TIME_S = "stationary_time_s"
 CONF_DROPOUT_HOLD_M = "dropout_hold_m"
 CONF_DROPOUT_HOLD_S = "dropout_hold_s"
+CONF_HOLDING_ENABLED = "holding_enabled"
 
 SENSOR_KEYS = [
     "target1_x", "target1_y", "target1_angle", "target1_speed", "target1_distance",
@@ -47,6 +48,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional(CONF_STATIONARY_TIME_S): cv.use_id(number.Number),
     cv.Optional(CONF_DROPOUT_HOLD_M): cv.use_id(number.Number),
     cv.Optional(CONF_DROPOUT_HOLD_S): cv.use_id(number.Number),
+    cv.Optional(CONF_HOLDING_ENABLED): cv.use_id(_switch.Switch),
 
 }).extend(cv.COMPONENT_SCHEMA).extend(uart.UART_DEVICE_SCHEMA)
 
@@ -109,6 +111,11 @@ async def to_code(config):
         hold_m = await cg.get_variable(config[CONF_DROPOUT_HOLD_M])
         cg.add(var.set_dropout_hold_m(hold_m))
 
+
     elif CONF_DROPOUT_HOLD_S in config:
         hold_s_legacy = await cg.get_variable(config[CONF_DROPOUT_HOLD_S])
         cg.add(var.set_dropout_hold_m(hold_s_legacy))
+
+    if CONF_HOLDING_ENABLED in config:
+        hold_enabled = await cg.get_variable(config[CONF_HOLDING_ENABLED])
+        cg.add(var.set_holding_enabled(hold_enabled))

@@ -41,6 +41,8 @@ class LD2450 : public Component, public uart::UARTDevice {
   void set_stationary_speed_thresh(number::Number *n) { stationary_speed_thresh = n; }
   void set_stationary_time_s(number::Number *n) { stationary_time_s = n; }
   void set_dropout_hold_m(number::Number *n) { dropout_hold_m = n; }
+  void set_holding_enabled(switch_::Switch *sw) { holding_enabled = sw; }
+
   void set_single_target_tracking();
   void set_multi_target_tracking();
   void restart_module();
@@ -97,6 +99,7 @@ class LD2450 : public Component, public uart::UARTDevice {
   number::Number *stationary_speed_thresh{nullptr};
   number::Number *stationary_time_s{nullptr};
   number::Number *dropout_hold_m{nullptr};
+  switch_::Switch *holding_enabled{nullptr};
 
  private:
   void send_command(const uint8_t *command, size_t length);
@@ -296,6 +299,10 @@ inline void LD2450::update_track_(int t, bool meas_valid,
   const float    v_thr     = nz_(stationary_speed_thresh,   45.0f);
   const uint32_t stat_s    = (uint32_t) std::lround(nz_(stationary_time_s,   5.0f));
   const uint32_t hold_min  = (uint32_t) std::lround(nz_(dropout_hold_m,     15.0f));
+  const bool     hold_perm = (holding_enabled ? holding_enabled->state : true);
+
+  static constexpr float FOV_DEGREES    = 120.0f;
+  static constexpr float EDGE_MARGIN_CM = 30.0f;
 
   Track &tr = tracks_[t];
 
@@ -334,7 +341,7 @@ inline void LD2450::update_track_(int t, bool meas_valid,
         tr.stationary = true;
         tr.stationary_since_ms = now;
       }
-      if (!tr.held && (now - tr.stationary_since_ms) >= stat_s * 1000UL) {
+      if (!tr.held && hold_perm && (now - tr.stationary_since_ms) >= stat_s * 1000UL) {
         tr.held = true;
         tr.held_since_ms = now;
       }
@@ -344,6 +351,33 @@ inline void LD2450::update_track_(int t, bool meas_valid,
     return;
 
   } else {
+
+    if (!hold_perm) {
+      tr = Track{};
+      publish_zero_(t);
+      return;
+    }
+
+    if (tr.has_fix) {
+      const float range_cm     = nz_(detection_range, 600.0f);
+      const bool near_max_range = (range_cm > 0.0f) && (tr.dist >= (range_cm - EDGE_MARGIN_CM));
+
+      bool near_fov_edge_or_outside = false;
+      const float half_fov_rad = (FOV_DEGREES * 0.5f) * (M_PI / 180.0f);
+      const float abs_ang_rad  = std::fabs(tr.angle) * (M_PI / 180.0f);
+      if (abs_ang_rad > half_fov_rad) {
+        near_fov_edge_or_outside = true;
+      } else {
+        const float dtheta_to_edge = half_fov_rad - abs_ang_rad;
+        const float lateral_cm     = tr.dist * dtheta_to_edge;
+        near_fov_edge_or_outside   = (lateral_cm <= EDGE_MARGIN_CM);
+      }
+      if (near_max_range || near_fov_edge_or_outside) {
+        tr = Track{};
+        publish_zero_(t);
+        return;
+      }
+    }
     if (tr.has_fix && tr.held) {
       if ((now - tr.last_update_ms) <= hold_min * 60000UL) {
         publish_track_(t, tr);
