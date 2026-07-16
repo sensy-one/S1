@@ -4,7 +4,7 @@ esphome:
   name_add_mac_suffix: True
   project: 
     name: Sensy-One.S1 mmWave Sensor
-    version: v1.2.8
+    version: v1.2.9
 
   on_boot:
   - priority: 800
@@ -88,6 +88,7 @@ esp32:
     type: esp-idf
     sdkconfig_options:
       CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE: n
+      CONFIG_LWIP_MAX_SOCKETS: "24"
 
 wifi:
   ap:
