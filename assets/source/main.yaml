@@ -1,11 +1,11 @@
 esphome:
-  min_version: 2026.10.1
+  min_version: 2026.11.0
   name: sensy-one
   friendly_name: Sensy One 
   name_add_mac_suffix: True
   project: 
     name: Sensy-One.S1 mmWave Sensor
-    version: v1.2.10
+    version: v1.2.11
 
   on_boot:
   - priority: 800
@@ -100,6 +100,7 @@ captive_portal:
 
 logger:
   level: ERROR
+  boot_log_level: ERROR
 
 api:
   reboot_timeout: 0s

@@ -1,0 +1,4 @@
+/releases/
+/.venv/
+.esphome/
+__pycache__/
